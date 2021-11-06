@@ -3,8 +3,8 @@
         {
             "title": "Testpin",
             "description": "This is the testpin's description",
-            "x": 0,
-            "y": 0,
+            "x": 100,
+            "y": 100,
             "imageUrl": "https://cdn.discordapp.com/attachments/906234477527842896/906234691064070174/905C2A87-082E-4030-BEFD-192F87D018AE.jpg",
             "area": "Azura",
             "type": {

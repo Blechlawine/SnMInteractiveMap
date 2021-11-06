@@ -12,7 +12,12 @@
             </Button>
         </div>
         <div class="categories">
-            <FoldableSection class="category" v-for="(category, categoryIndex) in categories" :key="category.id" :title="category.title">
+            <FoldableSection
+                class="category"
+                v-for="(category, categoryIndex) in categories"
+                :key="category.id"
+                :title="category.title"
+            >
                 <ToggleSwitch
                     v-for="(type, typeIndex) in category.types"
                     :key="type.id"

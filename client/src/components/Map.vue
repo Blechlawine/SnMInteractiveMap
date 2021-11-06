@@ -1,30 +1,51 @@
 <template>
-    <div class="map" ref="component" @mousedown="onMouseDown" @mouseup="stopMoving" @mouseout="stopMoving" @mousemove="onMouseMove" @mousewheel="zoom">
-        <img :src="`${mapImageSrc}`" alt="" class="image" ref="image" :style="imageStyle">
+    <div
+        class="map"
+        ref="component"
+        @mousedown="onMouseDown"
+        @mouseup="stopMoving"
+        @mouseout="stopMoving"
+        @mousemove="onMouseMove"
+        @mousewheel="zoom"
+    >
+        <div class="mapContent" :style="mapPositionStyle">
+            <Pin v-for="pin in pins" :key="pin.id" :pin="pin"></Pin>
+            <img :src="`${mapImageSrc}`" alt="" class="image" ref="image" />
+        </div>
     </div>
 </template>
 
 <script>
+import Pin from "@/components/Pin";
+import { mapGetters } from "vuex";
+
 export default {
     name: "movableMap",
+    components: {
+        Pin,
+    },
     data: () => ({
         moving: false,
         mapPosition: {
-            x: 0, y: 0,
+            x: 0,
+            y: 0,
         },
         mouseDownPosition: {
-            x: 0, y: 0,
+            x: 0,
+            y: 0,
         },
         prevMapPosition: {
-            x: 0, y: 0,
+            x: 0,
+            y: 0,
         },
         mapScale: 1,
     }),
     computed: {
-        imageStyle() {
+        ...mapGetters(["pins"]),
+        mapPositionStyle() {
             return {
                 "margin-left": "200px",
-                "transform": `scale(${this.mapScale}) translate(${this.mapPosition.x}px, ${this.mapPosition.y}px`,
+                transform: `scale(${this.mapScale}) translate(${this.mapPosition.x}px, ${this.mapPosition.y}px`,
             };
         },
         mapImageSrc() {
@@ -62,11 +83,11 @@ export default {
             } else {
                 // zoom in
                 this.mapScale *= 1.1;
-                this.mapPosition 
+                this.mapPosition;
             }
         },
-    }
-}
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -78,6 +99,10 @@ export default {
     overflow: hidden;
 
     background-color: $paperColor;
+
+    .mapContent {
+        height: 100%;
+    }
 }
 
 .image {

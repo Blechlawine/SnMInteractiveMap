@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const { Type, Category } = require("../model");
+const { Type, Category, Pin } = require("../model");
 
 app.get("/:id", (req, res) => {
 
@@ -14,6 +14,7 @@ app.get("/", async (req, res) => {
         },
         include: [{
             model: Type,
+            include: [Pin],
         }],
     });
     res.status(200).json({

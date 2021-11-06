@@ -1,9 +1,7 @@
 const sequelize = require("./utils/databaseUtils");
 
 const fs = require("fs");
-const Pin = require("./model/Pin");
-const Type = require("./model/Type");
-const Category = require("./model/Category");
+const { Type, Category, Pin } = require("./model");
 
 const seedFilePath = "./data/seed.json";
 
