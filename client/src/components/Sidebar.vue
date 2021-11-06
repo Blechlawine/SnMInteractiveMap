@@ -12,8 +12,18 @@
             </Button>
         </div>
         <div class="categories">
-            <FoldableSection class="category" v-for="category in categories" :key="category.id" :title="category.title">
-                <p v-for="type in category.types" :key="type.id">{{type.title}}</p>
+            <FoldableSection class="category" v-for="(category, categoryIndex) in categories" :key="category.id" :title="category.title">
+                <ToggleSwitch
+                    v-for="(type, typeIndex) in category.types"
+                    :key="type.id"
+                    @change="
+                        () => {
+                            toggleType(type, typeIndex, categoryIndex);
+                        }
+                    "
+                    :on="type.visible"
+                    :label="type.title"
+                ></ToggleSwitch>
             </FoldableSection>
         </div>
     </div>
@@ -23,12 +33,14 @@
 import Button from "@/components/button/Button";
 import FoldableSection from "@/components/FoldableSection";
 import { mapState } from "vuex";
+import ToggleSwitch from "./ToggleSwitch.vue";
 
 export default {
     name: "sidebar",
     components: {
         Button,
         FoldableSection,
+        ToggleSwitch,
     },
     computed: {
         ...mapState({
@@ -39,6 +51,10 @@ export default {
     methods: {
         changeMapLocation(event) {
             this.$store.commit("setMapLocationIndex", parseInt(event.target.dataset.index));
+        },
+        toggleType(type, typeIndex, categoryIndex) {
+            type.visible = !type.visible;
+            this.$store.commit("updateType", { type, typeIndex, categoryIndex });
         },
     },
 };
