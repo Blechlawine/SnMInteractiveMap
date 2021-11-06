@@ -1,16 +1,19 @@
 <template>
     <div class="home">
+        <Sidebar class="sidebar"></Sidebar>
         <Map class="map"></Map>
     </div>
 </template>
 
 <script>
 import Map from "@/components/Map";
+import Sidebar from "@/components/Sidebar";
 
 export default {
     name: "Home",
     components: {
         Map,
+        Sidebar,
     },
 };
 </script>
@@ -29,6 +32,10 @@ export default {
 
     .map {
         grid-area: map;
+    }
+
+    .sidebar {
+        grid-area: sidebar;
     }
 }
 </style>

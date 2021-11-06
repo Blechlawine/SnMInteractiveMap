@@ -1,6 +1,6 @@
 <template>
     <div class="map" ref="component" @mousedown="onMouseDown" @mouseup="stopMoving" @mouseout="stopMoving" @mousemove="onMouseMove" @mousewheel="zoom">
-        <img src="@/assets/Map_AzuraIsland.png" alt="" class="image" ref="image" :style="imageStyle">
+        <img :src="`${mapImageSrc}`" alt="" class="image" ref="image" :style="imageStyle">
     </div>
 </template>
 
@@ -23,10 +23,12 @@ export default {
     computed: {
         imageStyle() {
             return {
-                // "margin-top": ``,
-                // "margin-left": `${this.mapPosition.x}px`,
+                "margin-left": "200px",
                 "transform": `scale(${this.mapScale}) translate(${this.mapPosition.x}px, ${this.mapPosition.y}px`,
             };
+        },
+        mapImageSrc() {
+            return this.$store.state.mapLocations[this.$store.state.mapLocationIndex].path;
         },
     },
     methods: {
