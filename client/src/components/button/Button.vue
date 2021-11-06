@@ -33,6 +33,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/_variables.scss";
 
 .button {
     transition: all 200ms ease;
@@ -40,7 +41,7 @@ export default {
     font-size: 16px;
     font-weight: 500;
     border-radius: 6px;
-    padding: 8px 16px;
+    padding: 2px 10px;
     cursor: pointer;
 
     width: max-content;
@@ -50,10 +51,11 @@ export default {
 
     &Primary {
         @extend .button;
-        background-color: coral;
+        background-color: $red;
+        border: 4px solid $darkRed;
 
         &:hover {
-            background-color: lightcoral;
+            background-color: $darkRed;
         }
     }
 
@@ -61,7 +63,7 @@ export default {
         @extend .button;
 
         &:hover {
-            background-color: lightcoral;
+            background-color: $hoverColor;
         }
     }
 }

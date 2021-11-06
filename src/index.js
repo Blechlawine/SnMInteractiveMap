@@ -2,6 +2,7 @@ const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const routes = require("./routes");
+const middleware = require("./middleware");
 
 const sequelize = require("./utils/databaseUtils");
 
@@ -15,6 +16,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(morgan("common"));
 
+app.use(middleware);
 app.use("/api", routes);
 app.get("/", (req, res) => {
     res.redirect("/app/");

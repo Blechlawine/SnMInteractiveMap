@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import pins from "./pins";
 
 Vue.use(Vuex);
 
@@ -23,5 +24,7 @@ export default new Vuex.Store({
         },
     },
     actions: {},
-    modules: {},
+    modules: {
+        pins
+    },
 });
