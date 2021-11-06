@@ -19,6 +19,11 @@ Pin.init({
     description: {
         type: DataTypes.TEXT,
     },
+    area: {
+        type: DataTypes.ENUM,
+        values: ["Azura", "Farmlands"],
+        isNull: false,
+    },
     x: {
         type: DataTypes.NUMBER,
         isNull: false,
