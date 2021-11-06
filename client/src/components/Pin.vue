@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import {mapGetters, mapState} from "vuex";
 
 export default {
     name: "pin",
@@ -13,11 +13,14 @@ export default {
         pin: Object,
     },
     computed: {
+        ...mapState({
+            activeArea: state => state.mapLocations[state.mapLocationIndex],
+        }),
         ...mapGetters([
             "getType"
         ]),
         visible() {
-            return this.getType(this.pin.typeId).visible;
+            return this.getType(this.pin.typeId).visible && this.activeArea.name == this.pin.area;
         },
         pinStyle() {
             return {
