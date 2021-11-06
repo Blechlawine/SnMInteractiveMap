@@ -1,6 +1,5 @@
 const sequelize = require("../utils/databaseUtils");
 const { Sequelize, Model, DataTypes } = require("sequelize");
-const Category = require("./category");
 
 class Type extends Model {}
 
@@ -30,6 +29,5 @@ Type.init(
         modelName: "type",
     }
 );
-Type.belongsTo(Category);
 
 module.exports = Type;

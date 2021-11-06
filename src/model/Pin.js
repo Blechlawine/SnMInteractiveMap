@@ -2,7 +2,6 @@ const sequelize = require("../utils/databaseUtils");
 const {
     Sequelize, Model, DataTypes
 } = require("sequelize");
-const Type = require("./Type");
 
 class Pin extends Model {}
 
@@ -40,6 +39,5 @@ Pin.init({
     sequelize,
     modelName: "pin"
 });
-Pin.belongsTo(Type);
 
 module.exports = Pin;
