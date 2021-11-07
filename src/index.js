@@ -21,7 +21,7 @@ app.use("/api", routes);
 // app.get("/", (req, res) => {
 //     res.redirect("/app/");
 // });
-app.use("/*", express.static("./client/dist/"));
+app.use("/", express.static("./client/dist/"));
 
 // database setup
 sequelize
