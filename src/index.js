@@ -18,10 +18,10 @@ app.use(morgan("common"));
 
 app.use(middleware);
 app.use("/api", routes);
-app.get("/", (req, res) => {
-    res.redirect("/app/");
-});
-app.use("/app/*", express.static("./client/dist"));
+// app.get("/", (req, res) => {
+//     res.redirect("/app/");
+// });
+app.use("/*", express.static("./client/dist"));
 
 // database setup
 sequelize
