@@ -10,7 +10,7 @@ require("dotenv").config();
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 
-const PORT = process.env.PORT || isProduction ? 80 : 9000;
+const PORT = process.env.PORT || 9000;
 
 app.use(helmet());
 app.use(express.json());
