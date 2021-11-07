@@ -1,0 +1,28 @@
+{
+    "categories": [
+        {
+            "title": "Loot",
+            "description": "",
+            "types": [
+                {
+                    "title": "Chest",
+                    "description": ""
+                },
+                {
+                    "title": "Breakable container",
+                    "description": ""
+                }
+            ]
+        },
+        {
+            "title": "Wood",
+            "description": "",
+            "types": [
+                {
+                    "title": "Oak wood",
+                    "description": ""
+                }
+            ]
+        }
+    ]
+}
