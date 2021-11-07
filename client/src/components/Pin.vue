@@ -42,6 +42,7 @@ export default {
 
     .material-icons {
         font-size: 36px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 }
 </style>
