@@ -5,17 +5,17 @@
         @mousedown="onMouseDown"
         @mouseup="stopMoving"
         @mousemove="onMouseMove"
-        @mousewheel="zoom"
+        @wheel="zoom"
         @click="useTool"
         :style="mapStyle"
     >
         <div class="mapContent" :style="mapPositionStyle" ref="map">
-            <Pin v-for="pin in pins" :key="pin.id" :pin="pin" :style="pinStyle"></Pin>
             <img :src="`${mapImageSrc}`" alt="" class="image" ref="image" />
+            <Pin v-for="pin in pins" :key="pin.id" :pin="pin" :style="pinStyle"></Pin>
         </div>
         <IconButton class="addBtn" @click="selectAddTool" :primary="true">add</IconButton>
         <Dialog class="addPinDialog" title="Create new pin" :open="addPinDialogOpen" @close="closeAddPinDialog">
-            <TextInput v-model="newPin.name" label="Name"></TextInput>
+            <TextInput v-model="newPin.title" label="Name"></TextInput>
             <Dropdown
                 :value="this.newPin.category.title"
                 :values="categories"
@@ -211,6 +211,7 @@ export default {
 
     .mapContent {
         height: 100%;
+        width: 100%;
     }
 }
 

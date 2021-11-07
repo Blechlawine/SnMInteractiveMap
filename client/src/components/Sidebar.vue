@@ -77,7 +77,7 @@ export default {
     background-color: $backgroundColor;
     width: 100%;
     height: 100%;
-    z-index: 10;
+    z-index: 1000;
     padding: 12px;
 
     display: flex;
