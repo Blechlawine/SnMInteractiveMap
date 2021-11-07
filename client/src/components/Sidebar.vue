@@ -11,15 +11,16 @@
                 {{ mapLocation.name }}
             </Button>
         </div>
-        <div class="categories">
+        <p>Categories</p>
+        <div class="categories public">
             <FoldableSection
                 class="category"
-                v-for="(category, categoryIndex) in categories"
+                v-for="(category, categoryIndex) in publicCategories"
                 :key="category.id"
-                :title="category.title"
+                :title="`${category.title} ${category.private ? '(private)' : ''}`"
             >
                 <ToggleSwitch
-                    v-for="(type, typeIndex) in category.types"
+                    v-for="(type, typeIndex) in getCategoryTypes(category.id)"
                     :key="type.id"
                     @change="
                         () => {
@@ -27,7 +28,7 @@
                         }
                     "
                     :on="type.visible"
-                    :label="type.title"
+                    :label="`${type.title} ${type.private ? '(private)' : ''}`"
                 ></ToggleSwitch>
             </FoldableSection>
         </div>
@@ -37,7 +38,7 @@
 <script>
 import Button from "@/components/button/Button";
 import FoldableSection from "@/components/FoldableSection";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import ToggleSwitch from "./ToggleSwitch.vue";
 
 export default {
@@ -48,9 +49,13 @@ export default {
         ToggleSwitch,
     },
     computed: {
+        ...mapGetters([
+            "getCategoryTypes",
+        ]),
         ...mapState({
             mapLocations: (state) => state.mapLocations,
-            categories: (state) => state.pins.categories,
+            publicCategories: state => state.pins.categories,
+            publicTypes: state => state.pins.types,
         }),
     },
     methods: {

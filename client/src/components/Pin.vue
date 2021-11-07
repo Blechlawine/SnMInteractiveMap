@@ -37,5 +37,11 @@ export default {
 .pin {
     position: absolute;
     z-index: 100;
+    height: 36px;
+    width: 36px;
+
+    .material-icons {
+        font-size: 36px;
+    }
 }
 </style>

@@ -8,7 +8,7 @@
 export default {
     name: "App",
     mounted() {
-        this.$store.dispatch("fetchCategories");
+        this.$store.dispatch("fetchAll");
     },
 }
 </script>

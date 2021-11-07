@@ -12,10 +12,6 @@ app.get("/", async (req, res) => {
         where: {
             deletedAt: null
         },
-        include: [{
-            model: Type,
-            include: [Pin],
-        }],
     });
     res.status(200).json({
         data: {

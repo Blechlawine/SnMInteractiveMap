@@ -1,6 +1,6 @@
 <template>
     <div :class="this.classes" v-on:click="this.click">
-        <p class="label">{{ this.text }}</p>
+        <span class="material-icons"><slot></slot></span>
     </div>
 </template>
 
@@ -16,12 +16,9 @@ export default {
     computed: {
         classes() {
             return {
-                buttonPrimary: this.primary,
-                buttonSecondary: !this.primary,
+                "buttonPrimary": this.primary,
+                "buttonSecondary": !this.primary,
             };
-        },
-        text() {
-            return this.$slots.default[0].text;
         },
     },
     methods: {
@@ -38,25 +35,21 @@ export default {
 .button {
     transition: all 200ms ease;
 
+    font-size: 16px;
+    font-weight: 500;
     border-radius: 6px;
     padding: 2px 10px;
     cursor: pointer;
 
     width: max-content;
     height: min-content;
-
-    user-select: none;
-
     display: flex;
     align-items: center;
-    flex-direction: row;
+    height: 48px;
+    width: 48px;
+    justify-content: center;
 
-    .label {
-        font-weight: 500;
-        font-size: 16px;
-        height: 24px;
-        pointer-events: none;
-    }
+    user-select: none;
 
     &Primary {
         @extend .button;

@@ -1,12 +1,12 @@
 const express = require("express");
 const app = express();
 
-const { Pin, Type } = require("../model");
+const { Type, Category } = require("../model");
 
 app.get("/:id", async (req, res) => {
     let { id } = req.params;
-    let pin = await Pin.findByPk(id, {
-        include: Type,
+    let pin = await Type.findByPk(id, {
+        include: Category,
     });
     res.status(200).json({
         data: {
@@ -16,14 +16,14 @@ app.get("/:id", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-    let pins = await Pin.findAll({
+    let types = await Type.findAll({
         where: {
             deletedAt: null,
         },
     });
     res.status(200).json({
         data: {
-            pins,
+            types,
         },
     });
 });
