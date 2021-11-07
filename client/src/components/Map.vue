@@ -73,7 +73,7 @@ export default {
         mapScale: 1,
         addPinDialogOpen: false,
         newPin: {
-            name: "",
+            title: "",
             category: {},
             type: {},
             x: 0,
