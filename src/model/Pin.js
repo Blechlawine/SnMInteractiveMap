@@ -25,11 +25,11 @@ Pin.init({
         isNull: false,
     },
     x: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.FLOAT,
         isNull: false,
     },
     y: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.FLOAT,
         isNull: false,
     },
     imageUrl: {
