@@ -4,7 +4,7 @@ import router from "./router";
 import store from "./store";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:9000/api";
+axios.defaults.baseURL = process.env.NODE_ENV === "production" ? "/api" : "http://localhost:9000/api";
 
 Vue.config.productionTip = false;
 
