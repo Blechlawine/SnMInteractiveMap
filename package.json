@@ -1,6 +1,6 @@
 {
     "name": "SnMInteractiveMap",
-    "version": "1.0.0",
+    "version": "alpha0.1",
     "description": "An interactive map for Swords 'n Magic and stuff.",
     "main": "index.js",
     "scripts": {
