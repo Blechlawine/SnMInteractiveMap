@@ -14,7 +14,7 @@ export default new Vuex.Store({
             },
             {
                 name: "Farmlands",
-                path: "Farmlands_map_ingame.jpg",
+                path: "map_farmlands_prototype_vec.svg",
             },
         ],
     },
