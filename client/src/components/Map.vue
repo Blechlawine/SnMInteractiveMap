@@ -21,12 +21,19 @@
                 :values="categories"
                 label="Category"
                 @change="this.setNewPinCategory"
+                @createValue="createNewCategory"
             >
                 <template v-slot:value="{ value }">
                     <p>{{ value.title }}</p>
                 </template>
             </Dropdown>
-            <Dropdown :value="this.newPin.type.title" :values="types" label="Type" @change="this.setNewPinType">
+            <Dropdown
+                :value="this.newPin.type.title"
+                :values="types"
+                label="Type"
+                @change="this.setNewPinType"
+                @createValue="createNewType"
+            >
                 <template v-slot:value="{ value }">
                     <p>{{ value.title }}</p>
                 </template>
@@ -44,6 +51,7 @@ import Dropdown from "@/components/inputs/Dropdown";
 import Dialog from "@/components/Dialog";
 import TextInput from "@/components/inputs/TextInput";
 import { mapGetters, mapState } from "vuex";
+import {genRandHex} from "@/utils/utils";
 
 export default {
     name: "movableMap",
@@ -103,7 +111,7 @@ export default {
         },
         pinStyle() {
             return {
-                transform: `scale(${1/this.mapScale}) translate(-${18 * this.mapScale}px, -${18 * this.mapScale}px)`,
+                transform: `scale(${1 / this.mapScale}) translate(-${18 * this.mapScale}px, -${18 * this.mapScale}px)`,
             };
         },
     },
@@ -179,6 +187,22 @@ export default {
             };
             this.$store.dispatch("addPrivatePin", pin);
             this.closeAddPinDialog();
+        },
+        createNewType(value) {
+            const id = genRandHex(20);
+            this.newPin.type = {
+                title: value,
+                id: `private_${id}`,
+                visible: true,
+            };
+        },
+        createNewCategory(value) {
+            const id = genRandHex(20);
+            this.newPin.category = {
+                title: value,
+                id: `private_${id}`,
+                visible: true,
+            };
         },
         setNewPinCategory(value) {
             const category = JSON.parse(value);

@@ -16,10 +16,12 @@ export default {
         setPins(state, payload) {
             state.pins = payload;
         },
-        updateType(state, { type, typeIndex }) {
+        updateType(state, { type }) {
+            const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
             Object.assign(state.types[typeIndex], type);
         },
-        updatePrivateType(state, { type, typeIndex }) {
+        updatePrivateType(state, { type }) {
+            const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
             Object.assign(state.privateTypes[typeIndex], type);
         },
         addPrivatePin(state, payload) {
@@ -102,11 +104,14 @@ export default {
             if (!categoryExists) {
                 commit("addPrivateCategory", pin.category);
             }
-            delete pin.category;
+            pin.categoryId = pin.category.id;
             const typeExists = state.types.find((type) => type.id === pin.typeId);
             if (!typeExists) {
+                pin.type.categoryId = pin.category.id;
                 commit("addPrivateType", pin.type);
             }
+            pin.typeId = pin.type.id;
+            delete pin.category;
             delete pin.type;
             commit("addPrivatePin", pin);
             localStorage.setItem(

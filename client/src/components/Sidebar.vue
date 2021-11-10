@@ -24,7 +24,7 @@
                     :key="type.id"
                     @change="
                         () => {
-                            toggleType(type, typeIndex, categoryIndex);
+                            toggleType(type);
                         }
                     "
                     :on="type.visible"
@@ -62,9 +62,9 @@ export default {
         changeMapLocation(event) {
             this.$store.commit("setMapLocationIndex", parseInt(event.target.dataset.index));
         },
-        toggleType(type, typeIndex, categoryIndex) {
+        toggleType(type) {
             type.visible = !type.visible;
-            this.$store.commit("updateType", { type, typeIndex, categoryIndex });
+            this.$store.commit("updateType", { type });
         },
     },
 };
