@@ -15,12 +15,12 @@
         <div class="categories public">
             <FoldableSection
                 class="category"
-                v-for="(category, categoryIndex) in publicCategories"
+                v-for="(category) in publicCategories"
                 :key="category.id"
                 :title="`${category.title} ${category.private ? '(private)' : ''}`"
             >
                 <ToggleSwitch
-                    v-for="(type, typeIndex) in getCategoryTypes(category.id)"
+                    v-for="(type) in getCategoryTypes(category.id)"
                     :key="type.id"
                     @change="
                         () => {
