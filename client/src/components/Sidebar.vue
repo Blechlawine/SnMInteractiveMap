@@ -1,26 +1,22 @@
 <template>
     <div class="sidebar">
         <div class="locations">
-            <Button
-                v-for="(mapLocation, index) in mapLocations"
-                :key="mapLocation.name"
-                :data-index="index"
-                @click="changeMapLocation"
-                :primary="true"
-            >
-                {{ mapLocation.name }}
-            </Button>
+            <Tabs
+                :values="mapLocations.map((l) => l.name)"
+                :index="this.$store.state.mapLocationIndex"
+                @change="changeMapLocation"
+            ></Tabs>
         </div>
         <p>Categories</p>
         <div class="categories public">
             <FoldableSection
                 class="category"
-                v-for="(category) in publicCategories"
+                v-for="category in publicCategories"
                 :key="category.id"
                 :title="`${category.title} ${category.private ? '(private)' : ''}`"
             >
                 <ToggleSwitch
-                    v-for="(type) in getCategoryTypes(category.id)"
+                    v-for="type in getCategoryTypes(category.id)"
                     :key="type.id"
                     @change="
                         () => {
@@ -39,28 +35,28 @@
 import Button from "@/components/button/Button";
 import FoldableSection from "@/components/FoldableSection";
 import { mapState, mapGetters } from "vuex";
-import ToggleSwitch from "./ToggleSwitch.vue";
+import ToggleSwitch from "./ToggleSwitch";
+import Tabs from "./Tabs";
 
 export default {
     name: "sidebar",
     components: {
         Button,
+        Tabs,
         FoldableSection,
         ToggleSwitch,
     },
     computed: {
-        ...mapGetters([
-            "getCategoryTypes",
-        ]),
+        ...mapGetters(["getCategoryTypes"]),
         ...mapState({
             mapLocations: (state) => state.mapLocations,
-            publicCategories: state => state.pins.categories,
-            publicTypes: state => state.pins.types,
+            publicCategories: (state) => state.pins.categories,
+            publicTypes: (state) => state.pins.types,
         }),
     },
     methods: {
-        changeMapLocation(event) {
-            this.$store.commit("setMapLocationIndex", parseInt(event.target.dataset.index));
+        changeMapLocation(index) {
+            this.$store.commit("setMapLocationIndex", index);
         },
         toggleType(type) {
             type.visible = !type.visible;
