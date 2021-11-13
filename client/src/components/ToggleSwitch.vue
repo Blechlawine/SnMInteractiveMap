@@ -32,6 +32,7 @@ export default {
     flex-direction: row;
     grid-gap: 6px;
     cursor: pointer;
+    user-select: none;
 
     .material-icons {
         color: $red;

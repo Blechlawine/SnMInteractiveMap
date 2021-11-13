@@ -90,7 +90,7 @@ export default {
         font-size: 16px;
         line-height: 24px;
         border: none;
-        padding: 6px 8px;
+        padding: 6px 8px 0px 8px;
         background-color: $red;
     }
 

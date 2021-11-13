@@ -16,6 +16,8 @@
         <IconButton class="addBtn" @click="selectAddTool" :primary="true">add</IconButton>
         <Dialog class="addPinDialog" title="Create new pin" :open="addPinDialogOpen" @close="closeAddPinDialog">
             <TextInput v-model="newPin.title" label="Name"></TextInput>
+            <TextInput v-model="newPin.imageUrl" label="Image-url"></TextInput>
+            <TextInput v-model="newPin.description" label="Description"></TextInput>
             <Dropdown
                 :value="this.newPin.category.title"
                 :values="categories"
@@ -24,7 +26,7 @@
                 @createValue="createNewCategory"
             >
                 <template v-slot:value="{ value }">
-                    <p>{{ value.title }}</p>
+                    <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
                 </template>
             </Dropdown>
             <Dropdown
@@ -35,7 +37,7 @@
                 @createValue="createNewType"
             >
                 <template v-slot:value="{ value }">
-                    <p>{{ value.title }}</p>
+                    <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
                 </template>
             </Dropdown>
             <p class="error" v-if="noCategory">Please select or create a category.</p>
@@ -84,6 +86,8 @@ export default {
         addPinDialogOpen: false,
         newPin: {
             title: "",
+            description: "",
+            imageUrl: "",
             category: {},
             type: {},
             x: 0,
@@ -190,8 +194,10 @@ export default {
         },
         addPin() {
             if (!this.noCategory && !this.noType) {
+                const id = genRandHex(20);
                 const pin = {
                     ...this.newPin,
+                    id: `private_${id}`,
                     area: this.activeArea.name,
                 };
                 this.$store.dispatch("addPrivatePin", pin);

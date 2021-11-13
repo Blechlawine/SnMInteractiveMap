@@ -22,11 +22,15 @@ export default {
         },
         updatePrivateType(state, { type }) {
             const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
-            Object.assign(state.privateTypes[typeIndex], type);
+            Object.assign(state.types[typeIndex], type);
         },
         addPrivatePin(state, payload) {
             payload.private = true;
             state.pins.push(payload);
+        },
+        updatePrivatePin(state, editedPin) {
+            const pinIndex = state.pins.indexOf(state.pins.find((p) => p.id === editedPin.id));
+            Object.assign(state.pins[pinIndex], editedPin);
         },
         addPrivateType(state, payload) {
             payload.private = true;
@@ -99,21 +103,46 @@ export default {
                 commit("setPrivatePins", parsed.pins);
             }
         },
-        addPrivatePin({ state, getters, commit }, pin) {
-            const categoryExists = state.categories.find((cat) => cat.id === pin.categoryId);
+        createNecessaryTypesAndCategoriesForPin({ state, commit }, pin) {
+            const categoryExists = state.categories.find((cat) => cat.id === pin.category.id);
             if (!categoryExists) {
                 commit("addPrivateCategory", pin.category);
             }
             pin.categoryId = pin.category.id;
-            const typeExists = state.types.find((type) => type.id === pin.typeId);
+            const typeExists = state.types.find((type) => type.id === pin.type.id);
+            const typeExistsInCategory = pin.type.categoryId === pin.category.id;
             if (!typeExists) {
                 pin.type.categoryId = pin.category.id;
                 commit("addPrivateType", pin.type);
             }
+            if (!typeExistsInCategory && typeExists) {
+                const newType = {
+                    ...pin.type,
+                    id: `private_${pin.type.id}`,
+                    categoryId: pin.category.id,
+                };
+                pin.type = newType;
+                const newTypeExists = state.types.find(type => type.id === newType.id);
+                if (!newTypeExists) {
+                    commit("addPrivateType", pin.type);
+                }
+            }
             pin.typeId = pin.type.id;
             delete pin.category;
             delete pin.type;
+            return Promise.resolve();
+        },
+        async addPrivatePin({ commit, dispatch }, pin) {
+            await dispatch("createNecessaryTypesAndCategoriesForPin", pin);
             commit("addPrivatePin", pin);
+            dispatch("savePrivateData");
+        },
+        async updatePrivatePin({ commit, dispatch }, pin) {
+            await dispatch("createNecessaryTypesAndCategoriesForPin", pin);
+            commit("updatePrivatePin", pin);
+            dispatch("savePrivateData");
+        },
+        savePrivateData({ getters }) {
             localStorage.setItem(
                 "privateData",
                 JSON.stringify({
