@@ -38,6 +38,8 @@
                     <p>{{ value.title }}</p>
                 </template>
             </Dropdown>
+            <p class="error" v-if="noCategory">Please select or create a category.</p>
+            <p class="error" v-if="noType">Please select or create a type.</p>
             <Button @click="addPin" primary>Add</Button>
         </Dialog>
     </div>
@@ -51,7 +53,7 @@ import Dropdown from "@/components/inputs/Dropdown";
 import Dialog from "@/components/Dialog";
 import TextInput from "@/components/inputs/TextInput";
 import { mapGetters, mapState } from "vuex";
-import {genRandHex} from "@/utils/utils";
+import { genRandHex } from "@/utils/utils";
 
 export default {
     name: "movableMap",
@@ -113,6 +115,12 @@ export default {
             return {
                 transform: `scale(${1 / this.mapScale}) translate(-${18 * this.mapScale}px, -${18 * this.mapScale}px)`,
             };
+        },
+        noCategory() {
+            return this.newPin.category.id == undefined;
+        },
+        noType() {
+            return this.newPin.type.id == undefined;
         },
     },
     methods: {
@@ -181,12 +189,14 @@ export default {
             this.addPinDialogOpen = false;
         },
         addPin() {
-            const pin = {
-                ...this.newPin,
-                area: this.activeArea.name,
-            };
-            this.$store.dispatch("addPrivatePin", pin);
-            this.closeAddPinDialog();
+            if (!this.noCategory && !this.noType) {
+                const pin = {
+                    ...this.newPin,
+                    area: this.activeArea.name,
+                };
+                this.$store.dispatch("addPrivatePin", pin);
+                this.closeAddPinDialog();
+            }
         },
         createNewType(value) {
             const id = genRandHex(20);
