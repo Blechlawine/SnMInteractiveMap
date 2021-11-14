@@ -9,7 +9,9 @@
                     {{ this.editing ? "Edit pin" : this.pin.title || "Untitled Pin" }}
                 </p>
                 <div class="headerBtns">
-                    <span class="material-icons editBtn headerBtn" v-if="pin.private" @click="editPin">edit</span>
+                    <span class="material-icons editBtn headerBtn" v-if="pin.private && !this.editing" @click="editPin"
+                        >edit</span
+                    >
                     <span class="material-icons closeBtn headerBtn" @click="toggleDetails">close</span>
                 </div>
             </div>
@@ -50,9 +52,10 @@
                         <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
                     </template>
                 </Dropdown>
-                <div class="horizontalFlex right">
-                    <Button @click="cancelEditing">Cancel</Button>
-                    <Button @click="saveChanges">Save</Button>
+                <div class="horizontalFlex right gap10">
+                    <Button @click="deletePin" :label="deleteBtnText"></Button>
+                    <Button @click="cancelEditing" label="Cancel"></Button>
+                    <Button @click="saveChanges" :primary="true" label="Save"></Button>
                 </div>
             </div>
         </div>
@@ -85,6 +88,7 @@ export default {
             category: {},
             type: {},
         },
+        confirmDelete: false,
     }),
     computed: {
         ...mapState({
@@ -103,9 +107,11 @@ export default {
                 display: this.visible ? "initial" : "none",
             };
         },
+        deleteBtnText() {
+            return this.confirmDelete ? "Confirm deletion" : "Delete pin";
+        },
     },
-    mounted() {
-    },
+    mounted() {},
     methods: {
         toggleDetails() {
             this.detailsOpen = !this.detailsOpen;
@@ -114,18 +120,28 @@ export default {
         editPin() {
             this.editedPin = {
                 ...this.pin,
-                category: this.categories.find(cat => cat.id == this.pin.categoryId),
-                type: this.types.find(type => type.id == this.pin.typeId),
+                category: this.categories.find((cat) => cat.id == this.pin.categoryId),
+                type: this.types.find((type) => type.id == this.pin.typeId),
                 edited: true,
-            }
+            };
             this.editing = true;
+        },
+        deletePin() {
+            if (this.confirmDelete) {
+                this.$store.dispatch("deletePrivatePin", this.pin);
+                this.confirmDelete = false;
+            } else {
+                this.confirmDelete = true;
+            }
         },
         saveChanges() {
             this.$store.dispatch("updatePrivatePin", this.editedPin);
             this.editing = false;
+            this.confirmDelete = false;
         },
         cancelEditing() {
             this.editing = false;
+            this.confirmDelete = false;
         },
         createNewType(value) {
             const id = genRandHex(20);

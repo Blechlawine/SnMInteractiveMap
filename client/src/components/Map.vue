@@ -42,7 +42,7 @@
             </Dropdown>
             <p class="error" v-if="noCategory">Please select or create a category.</p>
             <p class="error" v-if="noType">Please select or create a type.</p>
-            <Button @click="addPin" primary>Add</Button>
+            <Button @click="addPin" primary label="Add"></Button>
         </Dialog>
     </div>
 </template>

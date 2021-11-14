@@ -51,5 +51,9 @@ body {
     &.left {
         justify-content: flex-start;
     }
+
+    &.gap10 {
+        grid-gap: 10px;
+    }
 }
 </style>

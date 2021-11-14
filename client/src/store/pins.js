@@ -28,6 +28,10 @@ export default {
             payload.private = true;
             state.pins.push(payload);
         },
+        deletePrivatePin(state, pin) {
+            const pinIndex = state.pins.indexOf(state.pins.find((p) => p.id === pin.id));
+            state.pins.splice(pinIndex, 1);
+        },
         updatePrivatePin(state, editedPin) {
             const pinIndex = state.pins.indexOf(state.pins.find((p) => p.id === editedPin.id));
             Object.assign(state.pins[pinIndex], editedPin);
@@ -140,6 +144,10 @@ export default {
         async updatePrivatePin({ commit, dispatch }, pin) {
             await dispatch("createNecessaryTypesAndCategoriesForPin", pin);
             commit("updatePrivatePin", pin);
+            dispatch("savePrivateData");
+        },
+        deletePrivatePin({ dispatch, commit }, pin) {
+            commit("deletePrivatePin", pin);
             dispatch("savePrivateData");
         },
         savePrivateData({ getters }) {
