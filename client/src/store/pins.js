@@ -16,11 +16,11 @@ export default {
         setPins(state, payload) {
             state.pins = payload;
         },
-        updateType(state, { type }) {
+        updateType(state, type) {
             const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
             Object.assign(state.types[typeIndex], type);
         },
-        updatePrivateType(state, { type }) {
+        updatePrivateType(state, type) {
             const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
             Object.assign(state.types[typeIndex], type);
         },
@@ -39,6 +39,10 @@ export default {
         addPrivateType(state, payload) {
             payload.private = true;
             state.types.push(payload);
+        },
+        deletePrivateType(state, type) {
+            const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
+            state.types.splice(typeIndex, 1);
         },
         addPrivateCategory(state, payload) {
             payload.private = true;
@@ -107,6 +111,15 @@ export default {
                 commit("setPrivatePins", parsed.pins);
             }
         },
+        createNecessaryCategoriesForType({state, commit}, type) {
+            const categoryExists = state.categories.find(cat => cat.id === type.category.id);
+            if (!categoryExists) {
+                commit("addPrivateCategory", type.category);
+            }
+            type.categoryId = type.category.id;
+            delete type.category;
+            return Promise.resolve();
+        },
         createNecessaryTypesAndCategoriesForPin({ state, commit }, pin) {
             const categoryExists = state.categories.find((cat) => cat.id === pin.category.id);
             if (!categoryExists) {
@@ -148,6 +161,19 @@ export default {
         },
         deletePrivatePin({ dispatch, commit }, pin) {
             commit("deletePrivatePin", pin);
+            dispatch("savePrivateData");
+        },
+        async updatePrivateType({dispatch, commit}, type) {
+            await dispatch("createNecessaryCategoriesForType", type);
+            commit("updatePrivateType", type);
+            dispatch("savePrivateData");
+        },
+        deletePrivateType({state, dispatch, commit}, type) {
+            const pinsOfType = state.pins.filter(pin => pin.typeId === type.id);
+            pinsOfType.forEach(p => {
+                commit("deletePrivatePin", p);
+            });
+            commit("deletePrivateType", type);
             dispatch("savePrivateData");
         },
         savePrivateData({ getters }) {
