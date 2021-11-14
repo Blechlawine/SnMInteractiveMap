@@ -24,7 +24,7 @@
                         }
                     "
                     :on="type.visible"
-                    :label="`${type.title} ${type.private ? '(private)' : ''}`"
+                    :label="`${type.title} ${type.private ? '(private)' : ''} (${getTypePins(type.id).length})`"
                 ></ToggleSwitch>
             </FoldableSection>
         </div>
@@ -47,7 +47,7 @@ export default {
         ToggleSwitch,
     },
     computed: {
-        ...mapGetters(["getCategoryTypes"]),
+        ...mapGetters(["getCategoryTypes", "getTypePins"]),
         ...mapState({
             mapLocations: (state) => state.mapLocations,
             publicCategories: (state) => state.pins.categories,

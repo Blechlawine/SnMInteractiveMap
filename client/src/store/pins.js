@@ -122,7 +122,7 @@ export default {
                     categoryId: pin.category.id,
                 };
                 pin.type = newType;
-                const newTypeExists = state.types.find(type => type.id === newType.id);
+                const newTypeExists = state.types.find((type) => type.id === newType.id);
                 if (!newTypeExists) {
                     commit("addPrivateType", pin.type);
                 }
@@ -162,5 +162,6 @@ export default {
         privatePins: (state) => state.pins.filter((pin) => pin.private),
         getType: (state) => (typeId) => state.types.find((type) => type.id === typeId),
         getCategoryTypes: (state) => (categoryId) => state.types.filter((type) => type.categoryId === categoryId),
+        getTypePins: (state) => (typeId) => state.pins.filter((pin) => pin.typeId === typeId),
     },
 };
