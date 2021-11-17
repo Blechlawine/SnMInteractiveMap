@@ -258,6 +258,7 @@ export default {
 .image {
     position: absolute;
     pointer-events: none;
+    width: 4096px;
 }
 
 .addBtn {
