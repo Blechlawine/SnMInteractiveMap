@@ -8,13 +8,21 @@
             ></Tabs>
         </div>
         <p>Categories</p>
-        <div class="categories public">
-            <FoldableSection
-                class="category"
-                v-for="category in categories"
-                :key="category.id"
-                :title="`${category.title} ${category.private ? '(private)' : ''}`"
-            >
+        <FoldableSection class="category" v-for="category in categories" :key="category.id">
+            <template v-slot:header="slotProps" class="sectionHeader">
+                <p class="title">{{ `${category.title} ${category.private ? "(private)" : ""}` }}</p>
+                <div class="headerBtns">
+                    <span
+                        class="material-icons editBtn toggleBtn"
+                        @click.stop="editCategory(category)"
+                        v-if="category.private"
+                    >
+                        edit
+                    </span>
+                    <span class="material-icons">{{ slotProps.open ? "expand_less" : "expand_more" }}</span>
+                </div>
+            </template>
+            <template v-slot:content>
                 <div class="toggleWrapper" v-for="type in getCategoryTypes(category.id)" :key="type.id">
                     <ToggleSwitch
                         @change="
@@ -29,9 +37,14 @@
                         edit
                     </span>
                 </div>
-            </FoldableSection>
-        </div>
-        <Dialog :open="editTypeDialogOpen" class="editTypeDialog" title="Edit type" @close="closeEditTypeDialog">
+            </template>
+        </FoldableSection>
+        <Dialog
+            :open="editTypeDialogOpen"
+            class="editTypeDialog editDialog"
+            title="Edit type"
+            @close="closeEditTypeDialog"
+        >
             <TextInput v-model="editableType.title" label="Title"></TextInput>
             <TextInput v-model="editableType.description" label="Description"></TextInput>
             <Dropdown
@@ -48,6 +61,19 @@
             <div class="horizontalFlex gap10 right">
                 <Button @click="deleteEditableType" :label="deleteTypeBtnLabel"></Button>
                 <Button @click="saveEditableType" primary label="Save"></Button>
+            </div>
+        </Dialog>
+        <Dialog
+            :open="editCategoryDialogOpen"
+            class="editCategoryDialog editDialog"
+            title="Edit type"
+            @close="closeEditCategoryDialog"
+        >
+            <TextInput v-model="editableCategory.title" label="Title"></TextInput>
+            <TextInput v-model="editableCategory.description" label="Description"></TextInput>
+            <div class="horizontalFlex gap10 right">
+                <Button @click="deleteEditableCategory" :label="deleteCategoryBtnLabel"></Button>
+                <Button @click="saveEditableCategory" primary label="Save"></Button>
             </div>
         </Dialog>
     </div>
@@ -85,6 +111,13 @@ export default {
             categoryId: "",
         },
         confirmTypeDelete: false,
+        editCategoryDialogOpen: false,
+        editableCategory: {
+            id: "",
+            title: "",
+            description: "",
+        },
+        confirmCategoryDelete: false,
     }),
     computed: {
         ...mapGetters(["getCategoryTypes", "getTypePins"]),
@@ -95,6 +128,9 @@ export default {
         }),
         deleteTypeBtnLabel() {
             return this.confirmTypeDelete ? "Confirm deletion" : "Delete type";
+        },
+        deleteCategoryBtnLabel() {
+            return this.confirmCategoryDelete ? "Confirm deletion" : "Delete Category";
         },
     },
     methods: {
@@ -138,6 +174,25 @@ export default {
             this.editableType.categoryId = category.id;
             this.editableType.category = category;
         },
+        editCategory(category) {
+            this.editableCategory = { ...category };
+            this.editCategoryDialogOpen = true;
+        },
+        closeEditCategoryDialog() {
+            this.editCategoryDialogOpen = false;
+        },
+        deleteEditableCategory() {
+            if (this.confirmCategoryDelete) {
+                this.$store.dispatch("deletePrivateCategory", this.editableCategory);
+                this.confirmCategoryDelete = false;
+                this.closeEditCategoryDialog();
+            } else {
+                this.confirmCategoryDelete = true;
+            }
+        },
+        saveEditableCategory() {
+            this.$store.dispatch("updatePrivateCategory", { ...this.editableCategory });
+        },
     },
 };
 </script>
@@ -176,6 +231,18 @@ export default {
 
         &:hover > .toggleBtn {
             display: initial;
+        }
+    }
+
+    .sectionHeader {
+        > * > .editBtn {
+            display: none;
+        }
+
+        &:hover {
+            > * > .editBtn {
+                display: initial;
+            }
         }
     }
 }
