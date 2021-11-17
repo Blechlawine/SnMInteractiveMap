@@ -4,6 +4,9 @@ An interactive map for planning your farming routes and finding stuff in the gam
 
 :link: Available here: [https://snminteractivemap.herokuapp.com/](https://snminteractivemap.herokuapp.com/)
 
+## Changelog
+
+[Changelog](Changelog.md)
 ## Documentation
 
 [Development docs](docs/TOC.md)
