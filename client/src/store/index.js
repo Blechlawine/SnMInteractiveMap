@@ -10,11 +10,11 @@ export default new Vuex.Store({
         mapLocations: [
             {
                 name: "Azura",
-                path: "Map_AzuraIsland.png",
+                path: "Azura_WIP.webp",
             },
             {
                 name: "Farmlands",
-                path: "map_farmlands_prototype_vec.svg",
+                path: "Farmlands_WIP.webp",
             },
         ],
     },
