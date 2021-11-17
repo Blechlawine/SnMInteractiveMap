@@ -25,9 +25,9 @@
                         :on="type.visible"
                         :label="`${type.title} ${type.private ? '(private)' : ''} (${getTypePins(type.id).length})`"
                     ></ToggleSwitch>
-                    <span class="material-icons editBtn toggleBtn" @click="editType(type)" v-if="type.private"
-                        >edit</span
-                    >
+                    <span class="material-icons editBtn toggleBtn" @click="editType(type)" v-if="type.private">
+                        edit
+                    </span>
                 </div>
             </FoldableSection>
         </div>
