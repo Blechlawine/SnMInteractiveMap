@@ -1,6 +1,6 @@
 <template>
     <div :class="this.classes" v-on:click="this.click">
-        <p class="label">{{ this.text }}</p>
+        <p class="label">{{ this.label }}</p>
     </div>
 </template>
 
@@ -12,6 +12,7 @@ export default {
             type: Boolean,
             default: false,
         },
+        label: String,
     },
     computed: {
         classes() {
@@ -19,9 +20,6 @@ export default {
                 buttonPrimary: this.primary,
                 buttonSecondary: !this.primary,
             };
-        },
-        text() {
-            return this.$slots.default[0].text;
         },
     },
     methods: {

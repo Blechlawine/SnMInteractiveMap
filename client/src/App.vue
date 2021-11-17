@@ -38,4 +38,22 @@ body {
     overflow: hidden;
     background-color: $backgroundColor;
 }
+
+.horizontalFlex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &.right {
+        justify-content: flex-end;
+    }
+
+    &.left {
+        justify-content: flex-start;
+    }
+
+    &.gap10 {
+        grid-gap: 10px;
+    }
+}
 </style>

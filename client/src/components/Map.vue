@@ -16,22 +16,33 @@
         <IconButton class="addBtn" @click="selectAddTool" :primary="true">add</IconButton>
         <Dialog class="addPinDialog" title="Create new pin" :open="addPinDialogOpen" @close="closeAddPinDialog">
             <TextInput v-model="newPin.title" label="Name"></TextInput>
+            <TextInput v-model="newPin.imageUrl" label="Image-url"></TextInput>
+            <TextInput v-model="newPin.description" label="Description"></TextInput>
             <Dropdown
                 :value="this.newPin.category.title"
                 :values="categories"
                 label="Category"
                 @change="this.setNewPinCategory"
+                @createValue="createNewCategory"
             >
                 <template v-slot:value="{ value }">
-                    <p>{{ value.title }}</p>
+                    <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
                 </template>
             </Dropdown>
-            <Dropdown :value="this.newPin.type.title" :values="types" label="Type" @change="this.setNewPinType">
+            <Dropdown
+                :value="this.newPin.type.title"
+                :values="types"
+                label="Type"
+                @change="this.setNewPinType"
+                @createValue="createNewType"
+            >
                 <template v-slot:value="{ value }">
-                    <p>{{ value.title }}</p>
+                    <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
                 </template>
             </Dropdown>
-            <Button @click="addPin" primary>Add</Button>
+            <p class="error" v-if="noCategory">Please select or create a category.</p>
+            <p class="error" v-if="noType">Please select or create a type.</p>
+            <Button @click="addPin" primary label="Add"></Button>
         </Dialog>
     </div>
 </template>
@@ -44,6 +55,7 @@ import Dropdown from "@/components/inputs/Dropdown";
 import Dialog from "@/components/Dialog";
 import TextInput from "@/components/inputs/TextInput";
 import { mapGetters, mapState } from "vuex";
+import { genRandHex } from "@/utils/utils";
 
 export default {
     name: "movableMap",
@@ -74,6 +86,8 @@ export default {
         addPinDialogOpen: false,
         newPin: {
             title: "",
+            description: "",
+            imageUrl: "",
             category: {},
             type: {},
             x: 0,
@@ -103,8 +117,14 @@ export default {
         },
         pinStyle() {
             return {
-                transform: `scale(${1/this.mapScale}) translate(-${18 * this.mapScale}px, -${18 * this.mapScale}px)`,
+                transform: `scale(${1 / this.mapScale}) translate(-${18 * this.mapScale}px, -${18 * this.mapScale}px)`,
             };
+        },
+        noCategory() {
+            return this.newPin.category.id == undefined;
+        },
+        noType() {
+            return this.newPin.type.id == undefined;
         },
     },
     methods: {
@@ -173,12 +193,32 @@ export default {
             this.addPinDialogOpen = false;
         },
         addPin() {
-            const pin = {
-                ...this.newPin,
-                area: this.activeArea.name,
+            if (!this.noCategory && !this.noType) {
+                const id = genRandHex(20);
+                const pin = {
+                    ...this.newPin,
+                    id: `private_${id}`,
+                    area: this.activeArea.name,
+                };
+                this.$store.dispatch("addPrivatePin", pin);
+                this.closeAddPinDialog();
+            }
+        },
+        createNewType(value) {
+            const id = genRandHex(20);
+            this.newPin.type = {
+                title: value,
+                id: `private_${id}`,
+                visible: true,
             };
-            this.$store.dispatch("addPrivatePin", pin);
-            this.closeAddPinDialog();
+        },
+        createNewCategory(value) {
+            const id = genRandHex(20);
+            this.newPin.category = {
+                title: value,
+                id: `private_${id}`,
+                visible: true,
+            };
         },
         setNewPinCategory(value) {
             const category = JSON.parse(value);
@@ -218,6 +258,7 @@ export default {
 .image {
     position: absolute;
     pointer-events: none;
+    width: 4096px;
 }
 
 .addBtn {

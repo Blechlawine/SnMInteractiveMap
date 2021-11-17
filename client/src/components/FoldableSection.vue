@@ -1,11 +1,13 @@
 <template>
     <div class="foldableSection">
         <div class="sectionHeader" @click="toggle">
-            <p class="title">{{ title }}</p>
-            <span class="material-icons">{{ this.open ? "expand_less" : "expand_more" }}</span>
+            <slot name="header" :open="open">
+                <p class="title">{{ title }}</p>
+                <span class="material-icons">{{ open ? "expand_less" : "expand_more" }}</span>
+            </slot>
         </div>
         <div class="content" v-if="this.open">
-            <slot></slot>
+            <slot name="content"></slot>
         </div>
     </div>
 </template>
@@ -49,6 +51,12 @@ export default {
 
         .title {
             line-height: 24px;
+        }
+
+        .headerBtns {
+            display: flex;
+            align-items: center;
+            grid-gap: 4px;
         }
     }
     

@@ -8,10 +8,17 @@
             <!-- <div class="value" v-for="val in values" :key="val" @click="selectValue" :data-value="val">
                 <p>{{ val }}</p>
             </div> -->
-            <div class="value" v-for="val in values" :key="JSON.stringify(val)" @click="selectValue" :data-value="JSON.stringify(val)">
-                <slot :value="val" name="value">
-
-                </slot>
+            <div
+                class="value"
+                v-for="val in values"
+                :key="JSON.stringify(val)"
+                @click="selectValue"
+                :data-value="JSON.stringify(val)"
+            >
+                <slot :value="val" name="value"> </slot>
+            </div>
+            <div class="valueInput" v-if="canCreateValue">
+                <input type="text" v-model="newValue" @keypress="onNewValueKeypress" :placeholder="newValuePlaceHolder" />
             </div>
         </div>
     </div>
@@ -28,10 +35,19 @@ export default {
         label: String,
         value: String,
         values: Array,
+        canCreateValue: {
+            type: Boolean,
+            default: true,
+        },
+        newValuePlaceHolder: {
+            type: String,
+            default: "New Value",
+        },
     },
     data: () => ({
         active: false,
         open: false,
+        newValue: "",
     }),
     methods: {
         activate() {
@@ -46,6 +62,11 @@ export default {
         selectValue(event) {
             this.$emit("change", event.currentTarget.dataset.value);
             this.open = false;
+        },
+        onNewValueKeypress(event) {
+            if (event.code == "Enter") {
+                this.$emit("createValue", this.newValue);
+            }
         },
     },
     computed: {
@@ -114,6 +135,25 @@ export default {
 
             &:hover {
                 background-color: $darkRed;
+            }
+        }
+
+        .valueInput {
+            cursor: pointer;
+            color: white;
+
+            ::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            input {
+                font-size: 16px;
+                line-height: 24px;
+                padding: 12px;
+                background-color: transparent;
+                outline: none;
+                border-radius: 4px;
+                border: none;
             }
         }
     }
