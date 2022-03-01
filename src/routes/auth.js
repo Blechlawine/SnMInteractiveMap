@@ -62,27 +62,21 @@ app.get("/refreshToken", (req, res) => {
 });
 
 app.get("/logout", async (req, res) => {
-    if (res.locals.authenticated) {
-        let cookies = parseCookie(req);
-        if (cookies) {
-            if (cookies.snmInteractiveMapToken) {
-                let refreshToken = await RefreshToken.findOne({
-                    where: {
-                        token: cookies.snmInteractiveMapToken,
-                    },
-                }).then((refreshToken) => {
-                    refreshToken.destroy();
-                    res.clearCookie(cookieName);
-                    res.status(200).json({
-                        message: "successfully logged out",
-                    });
-                });
-            }
+    let cookies = parseCookie(req);
+    if (cookies) {
+        if (cookies.snmInteractiveMapToken) {
+            await RefreshToken.findOne({
+                where: {
+                    token: cookies.snmInteractiveMapToken,
+                },
+            }).then((refreshToken) => {
+                refreshToken.destroy();
+                res.clearCookie(cookieName);
+            });
         }
     }
-    res.status(401).json({
-        errors: ["Couldn't log out"],
-        message: "Logout failed with errors",
+    res.status(200).json({
+        message: "successfully logged out",
     });
 });
 
