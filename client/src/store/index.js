@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import pins from "./pins";
+import user from "./user";
 import alerts from "./alerts";
 
 Vue.use(Vuex);
@@ -24,9 +25,23 @@ export default new Vuex.Store({
             state.mapLocationIndex = index;
         },
     },
-    actions: {},
+    actions: {
+        startup({dispatch, state}) {
+            return new Promise(async (resolve, reject) => {
+                await dispatch("fetchAll");
+                await dispatch("checkAuthenticated");
+                if (state.user.authenticated) {
+                    dispatch("refreshToken").catch(err => {
+                        reject(err);
+                    });
+                }
+                resolve(null);
+            });
+        },
+    },
     modules: {
         pins,
+        user,
         alerts,
     },
 });

@@ -1,9 +1,9 @@
 <template>
     <div id="app">
+        <router-view />
         <div class="alerts">
             <Alert v-for="alert in alerts" :key="alert.id" :alert="alert"></Alert>
         </div>
-        <router-view />
     </div>
 </template>
 
@@ -22,7 +22,9 @@ export default {
         }),
     },
     mounted() {
-        this.$store.dispatch("fetchAll");
+        this.$store.dispatch("startup").catch(err => {
+            this.$router.push("/login");
+        });
     },
 };
 </script>
