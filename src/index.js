@@ -3,6 +3,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const routes = require("./routes");
 const middleware = require("./middleware");
+const path = require("path");
 
 const sequelize = require("./utils/databaseUtils");
 
@@ -11,17 +12,21 @@ const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 
 const PORT = process.env.PORT || 9000;
+const CLIENT = path.resolve(__dirname, "../client/dist");
 
 app.use(helmet());
 app.use(express.json());
 app.use(morgan("common"));
 
 app.use(middleware);
+// Serves the vue frontend on "/"
+app.use("/", express.static(CLIENT));
+
+app.get(/^\/(?!api).*$/, (req, res) => { // this regex matches every route except everything that starts with /api
+    res.sendFile(path.resolve(CLIENT, "index.html"));
+});
+// api routes
 app.use("/api", routes);
-// app.get("/", (req, res) => {
-//     res.redirect("/app/");
-// });
-app.use("/", express.static("./client/dist"));
 
 // database setup
 sequelize
