@@ -18,7 +18,11 @@ export default {
         SubmissionsBar,
     },
     mounted() {
-        this.$store.dispatch("fetchSubmitted");
+        this.$nextTick(() => {
+            this.$store.dispatch("fetchSubmitted").catch((err) => {
+                this.$router.replace("/login");
+            });
+        });
     },
 };
 </script>
