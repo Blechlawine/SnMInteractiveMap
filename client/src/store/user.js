@@ -89,12 +89,14 @@ export default {
                     });
             });
         },
-        logout({ dispatch }) {
+        logout({ dispatch, commit }) {
             return new Promise(async (resolve, reject) => {
                 await axios
                     .get("/auth/logout", {})
                     .then((res) => {
                         dispatch("setAuthenticated", false);
+                        commit("setUser", undefined);
+                        commit("setJwt", undefined);
                         dispatch("pushAlert", {
                             title: "Success",
                             text: [res.data.message],
