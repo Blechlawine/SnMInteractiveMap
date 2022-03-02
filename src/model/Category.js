@@ -18,6 +18,11 @@ Category.init(
         description: {
             type: DataTypes.TEXT,
         },
+        status: {
+            type: DataTypes.ENUM,
+            defaultValue: "submitted",
+            values: ["submitted", "published"],
+        },
         deletedAt: {
             type: DataTypes.DATE,
             defaultValue: null,
