@@ -5,13 +5,12 @@ const User = require("./User");
 const RefreshToken = require("./RefreshToken");
 
 // Associations
-Category.hasMany(Type);
+Category.Types = Category.hasMany(Type);
+Type.Category = Type.belongsTo(Category);
 
-Type.hasMany(Pin);
-Type.belongsTo(Category);
+Type.Pins = Type.hasMany(Pin);
+Pin.Type = Pin.belongsTo(Type);
 
-Pin.belongsTo(Type);
-
-RefreshToken.belongsTo(User);
+RefreshToken.User = RefreshToken.belongsTo(User);
 
 module.exports = { Pin, Type, Category, User, RefreshToken };
