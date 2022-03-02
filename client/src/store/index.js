@@ -28,7 +28,6 @@ export default new Vuex.Store({
     actions: {
         startup({dispatch, state}) {
             return new Promise(async (resolve, reject) => {
-                await dispatch("fetchAll");
                 await dispatch("checkAuthenticated");
                 if (state.user.authenticated) {
                     dispatch("refreshToken").catch(err => {

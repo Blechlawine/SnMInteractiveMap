@@ -1,0 +1,1 @@
+.submissions[data-v-4b63c28e]{display:grid;grid-template-columns:400px 1fr;grid-template-rows:56px 1fr;grid-template-areas:"adminBar map" "sidebar map";height:100vh;width:100vw;overflow:hidden}.submissions .map[data-v-4b63c28e]{grid-area:map}.submissions .sidebar[data-v-4b63c28e]{grid-area:sidebar}.submissions .adminBar[data-v-4b63c28e]{grid-area:adminBar}

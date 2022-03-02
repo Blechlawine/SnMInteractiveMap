@@ -82,8 +82,13 @@ export default {
             await dispatch("fetchPins");
             dispatch("loadPrivateData");
         },
-        async fetchCategories({ commit }) {
-            await axios.get("/categories").then((res) => {
+        async fetchSubmitted({ dispatch }) {
+            await dispatch("fetchCategories", true);
+            await dispatch("fetchTypes", true);
+            await dispatch("fetchSubmittedPins");
+        },
+        async fetchCategories({ commit }, all = false) {
+            await axios.get(all ? "/categories/all" : "/categories").then((res) => {
                 const categories = res.data.data.categories;
                 categories.forEach((cat) => {
                     cat.private = false;
@@ -91,8 +96,8 @@ export default {
                 commit("setCategories", categories);
             });
         },
-        async fetchTypes({ commit }) {
-            await axios.get("/types").then((res) => {
+        async fetchTypes({ commit }, all = false) {
+            await axios.get(all ? "/types/all" : "/types").then((res) => {
                 const types = res.data.data.types;
                 types.forEach((type) => {
                     type.visible = true;
@@ -104,6 +109,15 @@ export default {
         async fetchPins({ commit }) {
             await axios.get("/pins").then((res) => {
                 const pins = res.data.data.pins;
+                pins.forEach((pin) => {
+                    pin.private = false;
+                });
+                commit("setPins", pins);
+            });
+        },
+        async fetchSubmittedPins({ commit }) {
+            await axios.get("/pins/submitted").then((res) => {
+                const { pins } = res.data.data;
                 pins.forEach((pin) => {
                     pin.private = false;
                 });

@@ -98,7 +98,7 @@ export default {
         }),
         ...mapGetters(["getType"]),
         visible() {
-            return this.getType(this.pin.typeId).visible && this.activeArea.name == this.pin.area;
+            return this.getType(this.pin.typeId)?.visible && this.activeArea.name == this.pin.area;
         },
         pinStyle() {
             return {
