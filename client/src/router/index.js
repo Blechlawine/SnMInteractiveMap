@@ -6,6 +6,8 @@ import Register from "@/views/Register";
 import Logout from "@/views/Logout";
 const Submissions = () => import("@/views/Submissions");
 
+import store from "@/store";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -33,6 +35,9 @@ const routes = [
         path: "/submissions",
         name: "Submissions",
         component: Submissions,
+        meta: {
+            requiresAuth: true,
+        },
     },
 ];
 
@@ -40,6 +45,28 @@ const router = new VueRouter({
     mode: "history",
     base: process.env.BASE_URL,
     routes,
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+        if (!store.state.user.jwt) {
+            if (store.state.user.authenticated) {
+                store.dispatch("refreshToken").then((res) => {
+                    next();
+                    return res;
+                });
+            } else {
+                next({
+                    path: "/login",
+                    query: { redirect: to.fullPath },
+                });
+            }
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
 export default router;

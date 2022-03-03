@@ -26,16 +26,12 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        startup({dispatch, state}) {
-            return new Promise(async (resolve, reject) => {
-                await dispatch("checkAuthenticated");
-                if (state.user.authenticated) {
-                    dispatch("refreshToken").catch(err => {
-                        reject(err);
-                    });
-                }
-                resolve(null);
-            });
+        async startup({ dispatch, state }) {
+            if (state.user.authenticated) {
+                return dispatch("refreshToken");
+            } else {
+                return Promise.resolve();
+            }
         },
     },
     modules: {

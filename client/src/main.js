@@ -21,16 +21,25 @@ axios.interceptors.response.use(
     async (err) => {
         if (err.response.status == 403) {
             let originalRequest = err.response.config;
-            await store.dispatch("refreshToken").catch((err) => {
-                if (!router.currentRoute.path.startsWith("/login")) {
-                    router.push("/login");
-                }
-            });
-            return axios(originalRequest);
+            return store
+                .dispatch("refreshToken")
+                .then((res) => {
+                    return axios(originalRequest);
+                })
+                .catch((err) => {
+                    if (!router.currentRoute.path.startsWith("/login")) {
+                        router.push("/login");
+                    }
+                    throw err;
+                });
         }
         return Promise.reject(err);
     }
 );
+
+let authenticated = localStorage.getItem("authenticated");
+if (authenticated) store.commit("setAuthenticated", true);
+else store.commit("setAuthenticated", false);
 
 Vue.config.productionTip = false;
 

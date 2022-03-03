@@ -21,11 +21,6 @@ export default {
             alerts: (state) => state.alerts.alerts,
         }),
     },
-    mounted() {
-        this.$store.dispatch("startup").catch(err => {
-            this.$router.push("/login");
-        });
-    },
 };
 </script>
 

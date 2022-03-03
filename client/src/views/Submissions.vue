@@ -17,12 +17,8 @@ export default {
         AdminBar,
         SubmissionsBar,
     },
-    mounted() {
-        this.$nextTick(() => {
-            this.$store.dispatch("fetchSubmitted").catch((err) => {
-                this.$router.replace("/login");
-            });
-        });
+    created() {
+        this.$store.dispatch("fetchSubmitted").catch((err) => {});
     },
 };
 </script>

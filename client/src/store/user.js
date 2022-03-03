@@ -19,19 +19,17 @@ export default {
     },
     actions: {
         refreshToken({ commit, dispatch }) {
-            return new Promise(async (resolve, reject) => {
-                await axios
-                    .get("/auth/refreshToken", {})
-                    .then((res) => {
-                        commit("setJwt", res.data.token);
-                        commit("setUser", res.data.user);
-                        dispatch("setAuthenticated", true);
-                        resolve(res);
-                    })
-                    .catch((error) => {
-                        reject(error);
-                    });
-            });
+            return axios
+                .get("/auth/refreshToken", {})
+                .then((res) => {
+                    commit("setJwt", res.data.token);
+                    commit("setUser", res.data.user);
+                    dispatch("setAuthenticated", true);
+                    return res;
+                })
+                .catch((error) => {
+                    throw error;
+                });
         },
         login({ commit, dispatch }, payload) {
             return new Promise(async (resolve, reject) => {

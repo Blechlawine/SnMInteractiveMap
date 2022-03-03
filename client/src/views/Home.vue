@@ -18,6 +18,11 @@ export default {
         Sidebar,
         AdminBar,
     },
+    created() {
+        this.$store.dispatch("startup").catch(err => {
+            this.$router.push("/login");
+        });
+    },
     async mounted() {
         await this.$store.dispatch("fetchAll");
     },

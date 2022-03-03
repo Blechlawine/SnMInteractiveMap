@@ -27,7 +27,7 @@ export default {
                 password: this.password,
                 email: this.email,
             }).then(res => {
-                this.$router.push("/");
+                this.$router.push(this.$route.query?.redirect ?? "/");
             });
         },
     },
