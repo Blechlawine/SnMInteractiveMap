@@ -1,13 +1,13 @@
 <template>
     <div :class="this.classes">
-        <div class="select" @click="toggle">
+        <div class="select">
             <p class="value">{{ this.value || this.label }}</p>
-            <span class="material-icons">{{ this.open ? "expand_less" : "expand_more" }}</span>
+            <div class="actions">
+                <IconButton v-if="canCreateValue" @click="addNewValue" tiny>add</IconButton>
+                <IconButton @click="toggle" tiny>{{ this.open ? "expand_less" : "expand_more" }}</IconButton>
+            </div>
         </div>
         <div class="values" v-if="this.open">
-            <!-- <div class="value" v-for="val in values" :key="val" @click="selectValue" :data-value="val">
-                <p>{{ val }}</p>
-            </div> -->
             <div
                 class="value"
                 v-for="val in values"
@@ -17,16 +17,18 @@
             >
                 <slot :value="val" name="value"> </slot>
             </div>
-            <div class="valueInput" v-if="canCreateValue">
-                <input type="text" v-model="newValue" @keypress="onNewValueKeypress" :placeholder="newValuePlaceHolder" />
-            </div>
         </div>
     </div>
 </template>
 
 <script>
+import IconButton from "@/components/button/IconButton";
+
 export default {
     name: "dropdown",
+    components: {
+        IconButton,
+    },
     model: {
         prop: "value",
         event: "change",
@@ -38,10 +40,6 @@ export default {
         canCreateValue: {
             type: Boolean,
             default: true,
-        },
-        newValuePlaceHolder: {
-            type: String,
-            default: "New Value",
         },
     },
     data: () => ({
@@ -63,10 +61,8 @@ export default {
             this.$emit("change", event.currentTarget.dataset.value);
             this.open = false;
         },
-        onNewValueKeypress(event) {
-            if (event.code == "Enter") {
-                this.$emit("createValue", this.newValue);
-            }
+        addNewValue(event) {
+            this.$emit("addNewValue", event);
         },
     },
     computed: {
@@ -110,7 +106,11 @@ export default {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        cursor: pointer;
+
+        .actions {
+            display: flex;
+            flex-direction: row;
+        }
 
         .value {
             height: 24px;
@@ -121,7 +121,7 @@ export default {
         position: absolute;
         width: calc(100% - 12px);
         margin: 6px;
-        margin-top: 38px;
+        margin-top: 36px;
         background-color: $red;
         border-radius: 6px;
         border: 4px solid $darkRed;

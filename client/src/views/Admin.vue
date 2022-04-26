@@ -1,34 +1,33 @@
 <template>
-    <div class="submissions">
+    <div class="admin">
         <AdminBar class="adminBar"></AdminBar>
-        <SubmissionsBar class="sidebar"></SubmissionsBar>
+        <AdminSideBar class="sidebar"></AdminSideBar>
         <Map class="map"></Map>
     </div>
 </template>
 <script>
 import Map from "@/components/Map";
 import AdminBar from "@/components/AdminBar";
-import SubmissionsBar from "@/components/SubmissionsBar";
+import AdminSideBar from "@/components/AdminSideBar";
 
 export default {
     name: "Submissions",
     components: {
         Map,
         AdminBar,
-        SubmissionsBar,
+        AdminSideBar,
     },
     created() {
-        this.$store.dispatch("fetchSubmitted").catch((err) => {});
+        this.$store.dispatch("fetchAdminData");
     },
 };
 </script>
 <style lang="sass" scoped>
-.submissions
+.admin
     display: grid
     grid-template-columns: 400px 1fr
     grid-template-rows: 56px 1fr
     grid-template-areas: "adminBar map" "sidebar map"
-
 
     height: 100vh
     width: 100vw

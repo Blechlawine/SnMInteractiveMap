@@ -4,7 +4,7 @@ import Home from "@/views/Home";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Logout from "@/views/Logout";
-const Submissions = () => import("@/views/Submissions");
+const Admin = () => import("@/views/Admin");
 
 import store from "@/store";
 
@@ -32,9 +32,9 @@ const routes = [
         component: Logout,
     },
     {
-        path: "/submissions",
-        name: "Submissions",
-        component: Submissions,
+        path: "/admin",
+        name: "Admin",
+        component: Admin,
         meta: {
             requiresAuth: true,
         },

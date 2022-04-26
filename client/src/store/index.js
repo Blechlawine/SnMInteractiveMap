@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import pins from "./pins";
 import user from "./user";
 import alerts from "./alerts";
+import admin from "./admin";
 
 Vue.use(Vuex);
 
@@ -38,5 +39,6 @@ export default new Vuex.Store({
         pins,
         user,
         alerts,
+        admin,
     },
 });

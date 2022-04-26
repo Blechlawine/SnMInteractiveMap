@@ -12,12 +12,22 @@ export default {
             type: Boolean,
             default: false,
         },
+        small: {
+            type: Boolean,
+            default: false,
+        },
+        tiny: {
+            type: Boolean,
+            default: false,
+        },
     },
     computed: {
         classes() {
             return {
-                "buttonPrimary": this.primary,
-                "buttonSecondary": !this.primary,
+                buttonPrimary: this.primary,
+                buttonSecondary: !this.primary,
+                small: this.small,
+                tiny: this.tiny,
             };
         },
     },
@@ -67,6 +77,16 @@ export default {
         &:hover {
             background-color: $hoverColor;
         }
+    }
+
+    &.small {
+        height: 36px;
+        width: 36px;
+    }
+
+    &.tiny {
+        height: 24px;
+        width: 24px;
     }
 }
 </style>

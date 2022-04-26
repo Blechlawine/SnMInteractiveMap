@@ -1,8 +1,8 @@
 <template>
     <div class="adminBar">
         <div class="tools">
-            <Button @click="normalView" :primary="isNormalView" label="App"></Button>
-            <Button @click="submissionsView" :primary="isSubmissionsView" label="Submissions"></Button>
+            <Button @click="normalView" :primary="isNormalView" label="Public pins"></Button>
+            <Button @click="submissionsView" :primary="isSubmissionsView" label="All pins"></Button>
         </div>
         <div class="logout">
             <Button @click="logout" label="Logout"></Button>
@@ -22,7 +22,7 @@ export default {
             return this.$route.path == "/";
         },
         isSubmissionsView() {
-            return this.$route.path == "/submissions";
+            return this.$route.path == "/admin";
         },
     },
     methods: {
@@ -33,7 +33,7 @@ export default {
             this.$router.push("/");
         },
         submissionsView() {
-            this.$router.push("/submissions");
+            this.$router.push("/admin");
         },
     },
 };

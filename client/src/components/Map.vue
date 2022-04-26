@@ -193,6 +193,7 @@ export default {
             this.addPinDialogOpen = false;
         },
         addPin() {
+            // TODO: if in admin route, send pin to server without id
             if (!this.noCategory && !this.noType) {
                 const id = genRandHex(20);
                 const pin = {
