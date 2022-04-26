@@ -9,8 +9,8 @@ module.exports = {
                     "status",
                     {
                         type: DataTypes.ENUM,
-                        defaultValue: "submitted",
-                        values: ["submitted", "published"],
+                        defaultValue: "draft",
+                        values: ["draft", "public"],
                     },
                     { transaction: t }
                 ),
@@ -19,8 +19,8 @@ module.exports = {
                     "status",
                     {
                         type: DataTypes.ENUM,
-                        defaultValue: "submitted",
-                        values: ["submitted", "published"],
+                        defaultValue: "draft",
+                        values: ["draft", "public"],
                     },
                     { transaction: t }
                 ),
@@ -29,8 +29,8 @@ module.exports = {
                     "status",
                     {
                         type: DataTypes.ENUM,
-                        defaultValue: "submitted",
-                        values: ["submitted", "published"],
+                        defaultValue: "draft",
+                        values: ["draft", "public"],
                     },
                     { transaction: t }
                 ),

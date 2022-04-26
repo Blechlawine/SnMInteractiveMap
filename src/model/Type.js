@@ -20,8 +20,8 @@ Type.init(
         },
         status: {
             type: DataTypes.ENUM,
-            defaultValue: "submitted",
-            values: ["submitted", "published"],
+            defaultValue: "draft",
+            values: ["draft", "public"],
         },
         deletedAt: {
             type: DataTypes.DATE,

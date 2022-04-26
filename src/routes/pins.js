@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { rejectUnauthenticated } = require("../middleware/auth");
-const { SubmitPin } = require("../model/validation/Pin");
+const { CreatePin, CreateDraftPin, AdministratePin } = require("../model/validation/Pin");
 
 const { Pin, Type } = require("../model");
 
@@ -21,7 +21,7 @@ app.get("/", async (req, res) => {
     let pins = await Pin.findAll({
         where: {
             deletedAt: null,
-            status: "published",
+            status: "public",
         },
     });
     res.status(200).json({
@@ -31,8 +31,8 @@ app.get("/", async (req, res) => {
     });
 });
 
-app.post("/submit", async (req, res) => {
-    let validated = SubmitPin.validate(req.body);
+app.post("/create", rejectUnauthenticated, async (req, res) => {
+    let validated = CreatePin.validate(req.body);
     if (validated.error) {
         res.status(400).json({
             message: "Request failed with errors",
@@ -54,7 +54,7 @@ app.post("/submit", async (req, res) => {
             }
         );
         res.status(200).json({
-            message: "Pin successfully submitted",
+            message: "Pin successfully created",
             data: {
                 pin: created,
             },
@@ -62,11 +62,10 @@ app.post("/submit", async (req, res) => {
     }
 });
 
-app.get("/submitted", rejectUnauthenticated, async (req, res) => {
+app.get("/all", rejectUnauthenticated, async (req, res) => {
     let pins = await Pin.findAll({
         where: {
             deletedAt: null,
-            status: "submitted",
         },
     });
     res.status(200).json({
@@ -74,6 +73,33 @@ app.get("/submitted", rejectUnauthenticated, async (req, res) => {
             pins,
         },
     });
+});
+
+app.post("/edit", rejectUnauthenticated, async (req, res) => {
+    let validated = AdministratePin.validate(req.body);
+    if (validated.error) {
+        res.status(400).json({
+            message: "Request failed with errors",
+            errors: validated.error.details.map((err) => ({ message: err.message, type: err.type })),
+        });
+    } else {
+        let updated = await Pin.update(
+            {
+                ...validated.value,
+            },
+            {
+                where: {
+                    id: validated.value.id,
+                },
+            }
+        );
+        res.status(200).json({
+            message: "Pin successfully updated",
+            data: {
+                pin: updated,
+            },
+        });
+    }
 });
 
 module.exports = app;
