@@ -30,6 +30,7 @@
                 </template>
             </Dropdown>
             <Dropdown
+                v-if="!noCategory"
                 :value="this.newPin.type.title"
                 :values="types"
                 label="Type"
@@ -98,10 +99,13 @@ export default {
         ...mapState({
             activeArea: (state) => state.mapLocations[state.mapLocationIndex],
             categories: (state) => state.pins.categories,
-            types: (state) => state.pins.types,
+            // types: (state) => state.pins.types,
             pins: (state) => state.pins.pins,
         }),
-        ...mapGetters(["privateCategories", "privateTypes", "privatePins"]),
+        ...mapGetters(["privateCategories", "privateTypes", "privatePins", "getCategoryTypes"]),
+        types() {
+            return (this.newPin?.category?.id && this.getCategoryTypes(this.newPin.category.id)) || [];
+        },
         mapPositionStyle() {
             return {
                 transform: `scale(${this.mapScale}) translate(${this.mapPosition.x}px, ${this.mapPosition.y}px)`,
@@ -225,6 +229,9 @@ export default {
             const category = JSON.parse(value);
             this.newPin.categoryId = category.id;
             this.newPin.category = category;
+            if (this.newPin.type.categoryId != this.newPin.category.id) {
+                this.newPin.type = {};
+            }
         },
         setNewPinType(value) {
             const type = JSON.parse(value);
