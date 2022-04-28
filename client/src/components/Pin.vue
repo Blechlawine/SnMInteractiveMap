@@ -128,14 +128,14 @@ export default {
         },
         deletePin() {
             if (this.confirmDelete) {
-                this.$store.dispatch("deletePrivatePin", this.pin);
+                this.$store.dispatch("deletePin", this.pin);
                 this.confirmDelete = false;
             } else {
                 this.confirmDelete = true;
             }
         },
         saveChanges() {
-            this.$store.dispatch("updatePrivatePin", this.editedPin);
+            this.$store.dispatch("updatePin", this.editedPin);
             this.editing = false;
             this.confirmDelete = false;
         },

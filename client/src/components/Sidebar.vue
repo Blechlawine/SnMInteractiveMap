@@ -147,7 +147,7 @@ export default {
         },
         deleteEditableType() {
             if (this.confirmTypeDelete) {
-                this.$store.dispatch("deletePrivateType", this.editableType);
+                this.$store.dispatch("deleteType", this.editableType);
                 this.confirmTypeDelete = false;
                 this.closeEditTypeDialog();
             } else {
@@ -159,7 +159,7 @@ export default {
         },
         saveEditableType() {
             this.closeEditTypeDialog();
-            this.$store.dispatch("updatePrivateType", { ...this.editableType });
+            this.$store.dispatch("updateType", { ...this.editableType });
         },
         createNewCategory(title) {
             const id = genRandHex(20);
@@ -183,7 +183,7 @@ export default {
         },
         deleteEditableCategory() {
             if (this.confirmCategoryDelete) {
-                this.$store.dispatch("deletePrivateCategory", this.editableCategory);
+                this.$store.dispatch("deleteCategory", this.editableCategory);
                 this.confirmCategoryDelete = false;
                 this.closeEditCategoryDialog();
             } else {
@@ -191,7 +191,7 @@ export default {
             }
         },
         saveEditableCategory() {
-            this.$store.dispatch("updatePrivateCategory", { ...this.editableCategory });
+            this.$store.dispatch("updateCategory", { ...this.editableCategory });
         },
     },
 };

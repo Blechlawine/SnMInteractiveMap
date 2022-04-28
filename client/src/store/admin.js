@@ -2,28 +2,20 @@ import axios from "axios";
 
 export default {
     state: () => ({
-        categories: [],
-        types: [],
-        pins: [],
+        // categories: [],
+        // types: [],
+        // pins: [],
     }),
     mutations: {
-        setAdminCategories(state, payload) {
-            state.categories = payload;
-        },
-        setAdminTypes(state, payload) {
-            state.types = payload;
-        },
-        setAdminPins(state, payload) {
-            state.pins = payload;
-        },
-        toggleCategoryOpen(state, id) {
-            const category = state.categories.find((c) => c.id === id);
-            category.open = !category.open;
-        },
-        toggleTypeOpen(state, id) {
-            const pinType = state.types.find((t) => t.id === id);
-            pinType.open = !pinType.open;
-        },
+        // setAdminCategories(state, payload) {
+        //     state.categories = payload;
+        // },
+        // setAdminTypes(state, payload) {
+        //     state.types = payload;
+        // },
+        // setAdminPins(state, payload) {
+        //     state.pins = payload;
+        // },
     },
     actions: {
         async fetchAdminCategories({ commit }) {
@@ -33,7 +25,7 @@ export default {
                     cat.private = false;
                     cat.open = false;
                 });
-                commit("setAdminCategories", categories);
+                commit("setCategories", categories);
             });
         },
         async fetchAdminTypes({ commit }) {
@@ -44,7 +36,7 @@ export default {
                     type.private = false;
                     type.open = false;
                 });
-                commit("setAdminTypes", types);
+                commit("setTypes", types);
             });
         },
         async fetchAdminPins({ commit }) {
@@ -53,13 +45,23 @@ export default {
                 pins.forEach((pin) => {
                     pin.private = false;
                 });
-                commit("setAdminPins", pins);
+                commit("setPins", pins);
             });
         },
         async fetchAdminData({ dispatch }) {
             await dispatch("fetchAdminCategories", true);
             await dispatch("fetchAdminTypes", true);
             await dispatch("fetchAdminPins", true);
+        },
+        toggleCategoryOpen({ commit, rootState }, id) {
+            const category = rootState.pins.categories.find((c) => c.id === id);
+            category.open = !category.open;
+            commit("updateCategory", category);
+        },
+        toggleTypeOpen({ commit, rootState }, id) {
+            const pinType = rootState.pins.types.find((t) => t.id === id);
+            pinType.open = !pinType.open;
+            commit("updateType", pinType);
         },
     },
 };

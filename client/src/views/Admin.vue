@@ -11,7 +11,7 @@ import AdminBar from "@/components/AdminBar";
 import AdminSideBar from "@/components/AdminSideBar";
 
 export default {
-    name: "Submissions",
+    name: "AdminUI",
     components: {
         Map,
         AdminBar,

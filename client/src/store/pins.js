@@ -24,23 +24,19 @@ export default {
             const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
             Object.assign(state.types[typeIndex], type);
         },
-        deletePrivateType(state, type) {
+        deleteType(state, type) {
             const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
             state.types.splice(typeIndex, 1);
-        },
-        updatePrivateType(state, type) {
-            const typeIndex = state.types.indexOf(state.types.find((t) => t.id === type.id));
-            Object.assign(state.types[typeIndex], type);
         },
         addPrivatePin(state, payload) {
             payload.private = true;
             state.pins.push(payload);
         },
-        deletePrivatePin(state, pin) {
+        deletePin(state, pin) {
             const pinIndex = state.pins.indexOf(state.pins.find((p) => p.id === pin.id));
             state.pins.splice(pinIndex, 1);
         },
-        updatePrivatePin(state, editedPin) {
+        updatePin(state, editedPin) {
             const pinIndex = state.pins.indexOf(state.pins.find((p) => p.id === editedPin.id));
             Object.assign(state.pins[pinIndex], editedPin);
         },
@@ -48,11 +44,11 @@ export default {
             payload.private = true;
             state.categories.push(payload);
         },
-        deletePrivateCategory(state, category) {
+        deleteCategory(state, category) {
             const catIndex = state.categories.indexOf(state.categories.find((c) => c.id === category.id));
             state.categories.splice(catIndex, 1);
         },
-        updatePrivateCategory(state, editedCategory) {
+        updateCategory(state, editedCategory) {
             const catIndex = state.categories.indexOf(state.categories.find((c) => c.id === editedCategory.id));
             Object.assign(state.categories[catIndex], editedCategory);
         },
@@ -164,28 +160,28 @@ export default {
         },
         async updatePrivatePin({ commit, dispatch }, pin) {
             await dispatch("createNecessaryTypesAndCategoriesForPin", pin);
-            commit("updatePrivatePin", pin);
+            commit("updatePin", pin);
             dispatch("savePrivateData");
         },
         deletePrivatePin({ dispatch, commit }, pin) {
-            commit("deletePrivatePin", pin);
+            commit("deletePin", pin);
             dispatch("savePrivateData");
         },
         async updatePrivateType({ dispatch, commit }, type) {
             await dispatch("createNecessaryCategoriesForType", type);
-            commit("updatePrivateType", type);
+            commit("updateType", type);
             dispatch("savePrivateData");
         },
         deletePrivateType({ state, dispatch, commit }, type) {
             const pinsOfType = state.pins.filter((pin) => pin.typeId === type.id);
             pinsOfType.forEach((p) => {
-                commit("deletePrivatePin", p);
+                commit("deletePin", p);
             });
-            commit("deletePrivateType", type);
+            commit("deleteType", type);
             dispatch("savePrivateData");
         },
         async updatePrivateCategory({ dispatch, commit }, category) {
-            commit("updatePrivateCategory", category);
+            commit("updateCategory", category);
             dispatch("savePrivateData");
         },
         deletePrivateCategory({ state, dispatch, commit }, category) {
@@ -193,11 +189,11 @@ export default {
             typesOfCategory.forEach((t) => {
                 const pinsOfType = state.pins.filter((pin) => pin.typeId === t.id);
                 pinsOfType.forEach((p) => {
-                    commit("deletePrivatePin", p);
+                    commit("deletePin", p);
                 });
-                commit("deletePrivateType", t);
+                commit("deleteType", t);
             });
-            commit("deletePrivateCategory", category);
+            commit("deleteCategory", category);
             dispatch("savePrivateData");
         },
         savePrivateData({ getters }) {

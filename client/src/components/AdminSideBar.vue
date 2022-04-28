@@ -50,17 +50,17 @@ export default {
     },
     computed: {
         ...mapState({
-            pins: (state) => state.admin.pins,
-            categories: (state) => state.admin.categories,
-            types: (state) => state.admin.types,
+            pins: (state) => state.pins.pins,
+            categories: (state) => state.pins.categories,
+            types: (state) => state.pins.types,
         }),
     },
     methods: {
         categoryToggleOpen(id) {
-            this.$store.commit("toggleCategoryOpen", id);
+            this.$store.dispatch("toggleCategoryOpen", id);
         },
         typeToggleOpen(id) {
-            this.$store.commit("toggleTypeOpen", id);
+            this.$store.dispatch("toggleTypeOpen", id);
         },
         categoryEdit(id) {
 
