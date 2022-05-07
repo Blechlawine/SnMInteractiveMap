@@ -4,6 +4,7 @@
             <p class="value">{{ this.value || this.label }}</p>
             <div class="actions">
                 <IconButton v-if="canCreateValue" @click="addNewValue" tiny>add</IconButton>
+                <IconButton v-if="canEditValue" @click="editValue" tiny>edit</IconButton>
                 <IconButton @click="toggle" tiny>{{ this.open ? "expand_less" : "expand_more" }}</IconButton>
             </div>
         </div>
@@ -11,9 +12,9 @@
             <div
                 class="value"
                 v-for="val in values"
-                :key="JSON.stringify(val)"
+                :key="makeString(val)"
                 @click="selectValue"
-                :data-value="JSON.stringify(val)"
+                :data-value="makeString(val)"
             >
                 <slot :value="val" name="value"> </slot>
             </div>
@@ -41,6 +42,10 @@ export default {
             type: Boolean,
             default: true,
         },
+        canEditValue: {
+            type: Boolean,
+            default: true,
+        },
     },
     data: () => ({
         active: false,
@@ -63,6 +68,15 @@ export default {
         },
         addNewValue(event) {
             this.$emit("addNewValue", event);
+        },
+        editValue(event) {
+            this.$emit("editValue", event);
+        },
+        makeString(value) {
+            if (typeof value === "string") {
+                return value;
+            }
+            return JSON.stringify(value);
         },
     },
     computed: {

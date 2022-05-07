@@ -28,6 +28,7 @@ export default {
                     return res;
                 })
                 .catch((error) => {
+                    dispatch("setAuthenticated", false);
                     throw error;
                 });
         },

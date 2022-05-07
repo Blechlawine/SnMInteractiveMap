@@ -1,50 +1,28 @@
 <template>
-    <div
-        class="map"
-        ref="component"
-        @mousedown="onMouseDown"
-        @mouseup="stopMoving"
-        @mousemove="onMouseMove"
-        @wheel="zoom"
-        @click="useTool"
-        :style="mapStyle"
-    >
-        <div class="mapContent" :style="mapPositionStyle" ref="map">
-            <img :src="`${mapImageSrc}`" alt="" class="image" ref="image" />
-            <Pin v-for="pin in pins" :key="pin.id" :pin="pin" :style="pinStyle"></Pin>
+    <div>
+        <div
+            class="map"
+            ref="component"
+            @mousedown="onMouseDown"
+            @mouseup="stopMoving"
+            @mousemove="onMouseMove"
+            @wheel="zoom"
+            @click="useTool"
+            :style="mapStyle"
+        >
+            <div class="mapContent" :style="mapPositionStyle" ref="map">
+                <img :src="`${mapImageSrc}`" alt="" class="image" ref="image" />
+                <Pin v-for="pin in pins" :key="pin.id" :pin="pin" :style="pinStyle"></Pin>
+            </div>
         </div>
         <IconButton class="addBtn" @click="selectAddTool" :primary="true">add</IconButton>
-        <Dialog class="addPinDialog" title="Create new pin" :open="addPinDialogOpen" @close="closeAddPinDialog">
-            <TextInput v-model="newPin.title" label="Name"></TextInput>
-            <TextInput v-model="newPin.imageUrl" label="Image-url"></TextInput>
-            <TextInput v-model="newPin.description" label="Description"></TextInput>
-            <Dropdown
-                :value="this.newPin.category.title"
-                :values="categories"
-                label="Category"
-                @change="this.setNewPinCategory"
-                @createValue="createNewCategory"
-            >
-                <template v-slot:value="{ value }">
-                    <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
-                </template>
-            </Dropdown>
-            <Dropdown
-                v-if="!noCategory"
-                :value="this.newPin.type.title"
-                :values="types"
-                label="Type"
-                @change="this.setNewPinType"
-                @createValue="createNewType"
-            >
-                <template v-slot:value="{ value }">
-                    <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
-                </template>
-            </Dropdown>
-            <p class="error" v-if="noCategory">Please select or create a category.</p>
-            <p class="error" v-if="noType">Please select or create a type.</p>
-            <Button @click="addPin" primary label="Add"></Button>
-        </Dialog>
+        <PinDialog
+            :open="pinDialogOpen"
+            :pin="this.newPin"
+            @close="closePinDialog"
+            @change="setPin"
+            title="Add new pin"
+        ></PinDialog>
     </div>
 </template>
 
@@ -53,10 +31,9 @@ import Pin from "@/components/Pin";
 import IconButton from "@/components/button/IconButton";
 import Button from "@/components/button/Button";
 import Dropdown from "@/components/inputs/Dropdown";
-import Dialog from "@/components/Dialog";
+import PinDialog from "@/components/dialogs/PinDialog.vue";
 import TextInput from "@/components/inputs/TextInput";
 import { mapGetters, mapState } from "vuex";
-import { genRandHex } from "@/utils/utils";
 
 export default {
     name: "movableMap",
@@ -66,7 +43,7 @@ export default {
         Button,
         TextInput,
         IconButton,
-        Dialog,
+        PinDialog,
     },
     data: () => ({
         moving: false,
@@ -84,13 +61,19 @@ export default {
         },
         canMove: true,
         mapScale: 1,
-        addPinDialogOpen: false,
+        pinDialogOpen: false,
         newPin: {
             title: "",
             description: "",
             imageUrl: "",
-            category: {},
-            type: {},
+            type: {
+                title: "",
+                description: "",
+                category: {
+                    title: "",
+                    description: "",
+                },
+            },
             x: 0,
             y: 0,
         },
@@ -99,12 +82,12 @@ export default {
         ...mapState({
             activeArea: (state) => state.mapLocations[state.mapLocationIndex],
             categories: (state) => state.pins.categories,
-            // types: (state) => state.pins.types,
+            types: (state) => state.pins.types,
             pins: (state) => state.pins.pins,
         }),
         ...mapGetters(["privateCategories", "privateTypes", "privatePins", "getCategoryTypes"]),
         types() {
-            return (this.newPin?.category?.id && this.getCategoryTypes(this.newPin.category.id)) || [];
+            return (this.newPin?.type?.category?.id && this.getCategoryTypes(this.newPin.type.category.id)) || [];
         },
         mapPositionStyle() {
             return {
@@ -116,19 +99,19 @@ export default {
         },
         mapStyle() {
             return {
-                cursor: this.canMove ? (this.moving ? "grabbing" : "grab") : "crosshair",
+                cursor: this.canMove
+                    ? this.moving
+                        ? "grabbing"
+                        : "grab"
+                    : this.pinDialogOpen
+                    ? "default"
+                    : "crosshair",
             };
         },
         pinStyle() {
             return {
                 transform: `scale(${1 / this.mapScale}) translate(-${18 * this.mapScale}px, -${18 * this.mapScale}px)`,
             };
-        },
-        noCategory() {
-            return this.newPin.category.id == undefined;
-        },
-        noType() {
-            return this.newPin.type.id == undefined;
         },
     },
     methods: {
@@ -174,13 +157,13 @@ export default {
             window.addEventListener("keydown", this.cancelTool);
         },
         useTool(event) {
-            if (!this.canMove && !this.addPinDialogOpen) {
+            if (!this.canMove && !this.pinDialogOpen) {
                 this.mouseDownPosition.x = event.clientX;
                 this.mouseDownPosition.y = event.clientY;
                 const visualMapPosition = this.$refs.map.getBoundingClientRect();
                 this.newPin.x = (event.clientX - visualMapPosition.x) / this.mapScale;
                 this.newPin.y = (event.clientY - visualMapPosition.y) / this.mapScale;
-                this.openAddPinDialog();
+                this.openPinDialog();
             }
         },
         cancelTool(event) {
@@ -189,54 +172,35 @@ export default {
                 window.removeEventListener("keydown", this.cancelTool);
             }
         },
-        openAddPinDialog() {
-            this.addPinDialogOpen = true;
+        openPinDialog() {
+            // TODO: Das hier wird ausgeführt, wenn es nicht soll
+            this.newPin = {
+                x: this.newPin.x,
+                y: this.newPin.y,
+                title: "",
+                description: "",
+                area: this.activeArea.name,
+                imageUrl: "",
+                type: {
+                    title: "",
+                    description: "",
+                    category: {
+                        title: "",
+                        description: "",
+                    },
+                },
+            };
+            this.pinDialogOpen = true;
         },
-        closeAddPinDialog() {
+        closePinDialog() {
             this.canMove = true;
-            this.addPinDialogOpen = false;
+            this.pinDialogOpen = false;
         },
-        addPin() {
-            // TODO: if in admin route, send pin to server without id
-            if (!this.noCategory && !this.noType) {
-                const id = genRandHex(20);
-                const pin = {
-                    ...this.newPin,
-                    id: `private_${id}`,
-                    area: this.activeArea.name,
-                };
-                this.$store.dispatch("addPrivatePin", pin);
-                this.closeAddPinDialog();
-            }
-        },
-        createNewType(value) {
-            const id = genRandHex(20);
-            this.newPin.type = {
-                title: value,
-                id: `private_${id}`,
-                visible: true,
+        setPin(pin) {
+            this.newPin = {
+                ...pin,
+                area: this.activeArea.name,
             };
-        },
-        createNewCategory(value) {
-            const id = genRandHex(20);
-            this.newPin.category = {
-                title: value,
-                id: `private_${id}`,
-                visible: true,
-            };
-        },
-        setNewPinCategory(value) {
-            const category = JSON.parse(value);
-            this.newPin.categoryId = category.id;
-            this.newPin.category = category;
-            if (this.newPin.type.categoryId != this.newPin.category.id) {
-                this.newPin.type = {};
-            }
-        },
-        setNewPinType(value) {
-            const type = JSON.parse(value);
-            this.newPin.typeId = type.id;
-            this.newPin.type = type;
         },
     },
 };
@@ -247,6 +211,7 @@ export default {
 
 .addPinDialog {
     cursor: initial;
+    z-index: 100;
 }
 
 .map {

@@ -25,11 +25,7 @@
             <template v-slot:content>
                 <div class="toggleWrapper" v-for="type in getCategoryTypes(category.id)" :key="type.id">
                     <ToggleSwitch
-                        @change="
-                            () => {
-                                toggleType(type);
-                            }
-                        "
+                        @change="() => toggleType(type)"
                         :on="type.visible"
                         :label="`${type.title} ${type.private ? '(private)' : ''} (${getTypePins(type.id).length})`"
                     ></ToggleSwitch>
@@ -39,7 +35,7 @@
                 </div>
             </template>
         </FoldableSection>
-        <Dialog
+        <!-- <Dialog
             :open="editTypeDialogOpen"
             class="editTypeDialog editDialog"
             title="Edit type"
@@ -75,7 +71,7 @@
                 <Button @click="deleteEditableCategory" :label="deleteCategoryBtnLabel"></Button>
                 <Button @click="saveEditableCategory" primary label="Save"></Button>
             </div>
-        </Dialog>
+        </Dialog> -->
     </div>
 </template>
 
@@ -86,7 +82,6 @@ import { mapState, mapGetters } from "vuex";
 import ToggleSwitch from "./ToggleSwitch";
 import Tabs from "./Tabs";
 import Dropdown from "@/components/inputs/Dropdown";
-import Dialog from "@/components/Dialog";
 import TextInput from "@/components/inputs/TextInput";
 import { genRandHex } from "@/utils/utils";
 
@@ -97,7 +92,6 @@ export default {
         Tabs,
         FoldableSection,
         ToggleSwitch,
-        Dialog,
         Dropdown,
         TextInput,
     },

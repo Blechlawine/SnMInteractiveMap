@@ -1,4 +1,5 @@
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
     state: () => ({
@@ -18,6 +19,8 @@ export default {
         },
         addPrivateType(state, payload) {
             payload.private = true;
+            payload.status = "private";
+            payload.id = payload.id ?? uuidv4();
             state.types.push(payload);
         },
         updateType(state, type) {
@@ -30,6 +33,8 @@ export default {
         },
         addPrivatePin(state, payload) {
             payload.private = true;
+            payload.status = "private";
+            payload.id = payload.id ?? uuidv4();
             state.pins.push(payload);
         },
         deletePin(state, pin) {
@@ -42,6 +47,8 @@ export default {
         },
         addPrivateCategory(state, payload) {
             payload.private = true;
+            payload.status = "private";
+            payload.id = payload.id ?? uuidv4();
             state.categories.push(payload);
         },
         deleteCategory(state, category) {
@@ -115,62 +122,60 @@ export default {
                 commit("setPrivatePins", parsed.pins);
             }
         },
-        createNecessaryCategoriesForType({ state, commit }, type) {
-            const categoryExists = state.categories.find((cat) => cat.id === type.category.id);
-            if (!categoryExists) {
-                commit("addPrivateCategory", type.category);
-            }
-            type.categoryId = type.category.id;
-            delete type.category;
-            return Promise.resolve();
+        createDefaultFieldsForPrivatePin(_, pin) {
+            return Promise.resolve({
+                ...pin,
+                id: pin.id ?? uuidv4(),
+                status: "private",
+                private: true,
+            });
         },
-        createNecessaryTypesAndCategoriesForPin({ state, commit }, pin) {
-            const categoryExists = state.categories.find((cat) => cat.id === pin.category.id);
-            if (!categoryExists) {
-                commit("addPrivateCategory", pin.category);
-            }
-            pin.categoryId = pin.category.id;
-            const typeExists = state.types.find((type) => type.id === pin.type.id);
-            const typeExistsInCategory = pin.type.categoryId === pin.category.id;
-            if (!typeExists) {
-                pin.type.categoryId = pin.category.id;
-                commit("addPrivateType", pin.type);
-            }
-            if (!typeExistsInCategory && typeExists) {
-                const newType = {
-                    ...pin.type,
-                    id: `private_${pin.type.id}`,
-                    categoryId: pin.category.id,
-                };
-                pin.type = newType;
-                const newTypeExists = state.types.find((type) => type.id === newType.id);
-                if (!newTypeExists) {
-                    commit("addPrivateType", pin.type);
-                }
-            }
-            pin.typeId = pin.type.id;
-            delete pin.category;
-            delete pin.type;
-            return Promise.resolve();
+        createDefaultFieldsForPrivateType(_, type) {
+            return Promise.resolve({
+                ...type,
+                id: type.id ?? uuidv4(),
+                visible: true,
+                status: "private",
+                private: true,
+            });
+        },
+        createDefaultFieldsForPrivateCategory(_, category) {
+            return Promise.resolve({
+                ...category,
+                id: category.id ?? uuidv4(),
+                status: "private",
+                private: true,
+            });
         },
         async addPrivatePin({ commit, dispatch }, pin) {
-            await dispatch("createNecessaryTypesAndCategoriesForPin", pin);
-            commit("addPrivatePin", pin);
+            let _pin = await dispatch("createDefaultFieldsForPrivatePin", pin);
+            _pin.typeId = _pin.type.id;
+            delete _pin.type;
+            commit("addPrivatePin", _pin);
             dispatch("savePrivateData");
+            return Promise.resolve(_pin);
         },
         async updatePrivatePin({ commit, dispatch }, pin) {
-            await dispatch("createNecessaryTypesAndCategoriesForPin", pin);
             commit("updatePin", pin);
             dispatch("savePrivateData");
+            return Promise.resolve(pin);
         },
         deletePrivatePin({ dispatch, commit }, pin) {
             commit("deletePin", pin);
             dispatch("savePrivateData");
         },
+        async addPrivateType({ commit, dispatch }, type) {
+            let _type = await dispatch("createDefaultFieldsForPrivateType", type);
+            _type.categoryId = _type.category.id;
+            delete _type.category;
+            commit("addPrivateType", _type);
+            dispatch("savePrivateData");
+            return Promise.resolve(_type);
+        },
         async updatePrivateType({ dispatch, commit }, type) {
-            await dispatch("createNecessaryCategoriesForType", type);
             commit("updateType", type);
             dispatch("savePrivateData");
+            return Promise.resolve(type);
         },
         deletePrivateType({ state, dispatch, commit }, type) {
             const pinsOfType = state.pins.filter((pin) => pin.typeId === type.id);
@@ -180,9 +185,16 @@ export default {
             commit("deleteType", type);
             dispatch("savePrivateData");
         },
+        async addPrivateCategory({ commit, dispatch }, category) {
+            let _category = await dispatch("createDefaultFieldsForPrivateCategory", category);
+            commit("addPrivateCategory", _category);
+            dispatch("savePrivateData");
+            return Promise.resolve(_category);
+        },
         async updatePrivateCategory({ dispatch, commit }, category) {
             commit("updateCategory", category);
             dispatch("savePrivateData");
+            return Promise.resolve(category);
         },
         deletePrivateCategory({ state, dispatch, commit }, category) {
             const typesOfCategory = state.types.filter((t) => t.categoryId === category.id);

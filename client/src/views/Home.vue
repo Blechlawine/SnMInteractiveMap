@@ -19,9 +19,7 @@ export default {
         AdminBar,
     },
     created() {
-        this.$store.dispatch("startup").catch(err => {
-            this.$router.push("/login");
-        });
+        this.$store.dispatch("startup");
     },
     async mounted() {
         await this.$store.dispatch("fetchAll");

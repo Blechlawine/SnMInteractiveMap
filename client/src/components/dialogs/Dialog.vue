@@ -1,7 +1,7 @@
 <template>
     <div class="dialogWrapper" v-if="open">
-        <div class="clickAwayListener" @click="close"></div>
-        <div class="dialog">
+        <div class="clickAwayListener" @click="close" :style="blackOutStyle"></div>
+        <div class="dialog" :style="dialogStyle">
             <div class="titleBar">
                 <p class="title">{{ title }}</p>
                 <span class="material-icons closeBtn" @click="close">close</span>
@@ -19,6 +19,22 @@ export default {
     props: {
         title: String,
         open: Boolean,
+        zIndex: {
+            type: Number,
+            default: 200,
+        },
+    },
+    computed: {
+        blackOutStyle() {
+            return {
+                zIndex: this.zIndex - 1,
+            };
+        },
+        dialogStyle() {
+            return {
+                "z-index": this.zIndex,
+            };
+        },
     },
     methods: {
         close() {
@@ -51,7 +67,6 @@ export default {
 }
 
 .dialog {
-    z-index: 200;
     min-width: 300px;
     display: flex;
     flex-direction: column;

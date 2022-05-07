@@ -33,7 +33,6 @@
 </template>
 <script>
 import Button from "@/components/button/Button";
-import Dialog from "@/components/Dialog";
 import TextInput from "@/components/inputs/TextInput";
 import Dropdown from "@/components/inputs/Dropdown";
 import CollapsableListItem from "@/components/collapsableList/CollapsableListItem";
@@ -43,7 +42,6 @@ export default {
     name: "AdminSideBar",
     components: {
         Button,
-        Dialog,
         TextInput,
         Dropdown,
         CollapsableListItem,

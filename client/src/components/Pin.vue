@@ -6,16 +6,13 @@
         <div class="details" v-if="detailsOpen">
             <div class="detailsHeader">
                 <p class="pinTitle">
-                    {{ this.editing ? "Edit pin" : this.pin.title || "Untitled Pin" }}
+                    {{ this.pin.title }}
                 </p>
                 <div class="headerBtns">
-                    <span class="material-icons editBtn headerBtn" v-if="pin.private && !this.editing" @click="editPin"
-                        >edit</span
-                    >
                     <span class="material-icons closeBtn headerBtn" @click="toggleDetails">close</span>
                 </div>
             </div>
-            <div class="detailsContent" v-if="!this.editing">
+            <div class="detailsContent">
                 <div class="placeholder" v-if="!this.pin.description && !this.pin.imageUrl">
                     <p>This pin does not have a description</p>
                 </div>
@@ -26,74 +23,25 @@
                     {{ this.pin.description }}
                 </p>
             </div>
-            <div class="detailsContent" v-if="this.editing">
-                <TextInput v-model="editedPin.title" label="Title"></TextInput>
-                <TextInput v-model="editedPin.imageUrl" label="Image-url"></TextInput>
-                <TextInput v-model="editedPin.description" label="Description"></TextInput>
-                <Dropdown
-                    :value="this.editedPin.category.title"
-                    :values="categories"
-                    label="Category"
-                    @change="this.setCategory"
-                    @createValue="createNewCategory"
-                >
-                    <template v-slot:value="{ value }">
-                        <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
-                    </template>
-                </Dropdown>
-                <Dropdown
-                    :value="this.editedPin.type.title"
-                    :values="types"
-                    label="Type"
-                    @change="this.setType"
-                    @createValue="createNewType"
-                >
-                    <template v-slot:value="{ value }">
-                        <p>{{ `${value.title} ${value.private ? " (private)" : ""}` }}</p>
-                    </template>
-                </Dropdown>
-                <div class="horizontalFlex right gap10">
-                    <Button @click="deletePin" :label="deleteBtnText"></Button>
-                    <Button @click="cancelEditing" label="Cancel"></Button>
-                    <Button @click="saveChanges" :primary="true" label="Save"></Button>
-                </div>
-            </div>
         </div>
     </div>
 </template>
 
 <script>
 import Button from "@/components/button/Button";
-import TextInput from "@/components/inputs/TextInput";
-import Dropdown from "@/components/inputs/Dropdown";
 import { mapGetters, mapState } from "vuex";
-import { genRandHex } from "@/utils/utils";
 
 export default {
     name: "pin",
     components: {
         Button,
-        TextInput,
-        Dropdown,
     },
     props: {
         pin: Object,
     },
-    data: () => ({
-        detailsOpen: false,
-        editing: false,
-        editedPin: {
-            title: "",
-            description: "",
-            category: {},
-            type: {},
-        },
-        confirmDelete: false,
-    }),
     computed: {
         ...mapState({
             activeArea: (state) => state.mapLocations[state.mapLocationIndex],
-            categories: (state) => state.pins.categories,
             types: (state) => state.pins.types,
         }),
         ...mapGetters(["getType"]),
@@ -107,67 +55,13 @@ export default {
                 display: this.visible ? "initial" : "none",
             };
         },
-        deleteBtnText() {
-            return this.confirmDelete ? "Confirm deletion" : "Delete pin";
-        },
     },
-    mounted() {},
+    data: () => ({
+        detailsOpen: false,
+    }),
     methods: {
         toggleDetails() {
             this.detailsOpen = !this.detailsOpen;
-            if (!this.detailsOpen) this.cancelEditing();
-        },
-        editPin() {
-            this.editedPin = {
-                ...this.pin,
-                category: this.categories.find((cat) => cat.id == this.pin.categoryId),
-                type: this.types.find((type) => type.id == this.pin.typeId),
-                edited: true,
-            };
-            this.editing = true;
-        },
-        deletePin() {
-            if (this.confirmDelete) {
-                this.$store.dispatch("deletePin", this.pin);
-                this.confirmDelete = false;
-            } else {
-                this.confirmDelete = true;
-            }
-        },
-        saveChanges() {
-            this.$store.dispatch("updatePin", this.editedPin);
-            this.editing = false;
-            this.confirmDelete = false;
-        },
-        cancelEditing() {
-            this.editing = false;
-            this.confirmDelete = false;
-        },
-        createNewType(value) {
-            const id = genRandHex(20);
-            this.editedPin.type = {
-                title: value,
-                id: `private_${id}`,
-                visible: true,
-            };
-        },
-        createNewCategory(value) {
-            const id = genRandHex(20);
-            this.editedPin.category = {
-                title: value,
-                id: `private_${id}`,
-                visible: true,
-            };
-        },
-        setCategory(value) {
-            const category = JSON.parse(value);
-            this.editedPin.categoryId = category.id;
-            this.category = category;
-        },
-        setType(value) {
-            const type = JSON.parse(value);
-            this.editedPin.typeId = type.id;
-            this.type = type;
         },
     },
 };
