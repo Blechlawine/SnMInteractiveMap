@@ -173,7 +173,6 @@ export default {
             }
         },
         openPinDialog() {
-            // TODO: Das hier wird ausgeführt, wenn es nicht soll
             this.newPin = {
                 x: this.newPin.x,
                 y: this.newPin.y,
