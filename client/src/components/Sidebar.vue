@@ -7,6 +7,19 @@
                 @change="changeMapLocation"
             ></Tabs>
         </div>
+        <p>Announcement</p>
+        <p class="announcement">
+            The Heroku URL will stop working in November, because Heroku is phasing out their free tier and I'm going to
+            move the hosting to a different provider. This means your current private pins won't migrate over. But you
+            can copy the data of your private pins out from localstorage in your browser and paste them into
+            localstorage on the new URL when I launch the new hosting. Please search Google (or your search engine of
+            choice) on how to do so.
+        </p>
+        <br />
+        <i class="announcement">
+            PS: I'm still working on the next update, which is proving to be more work than I expected, because I'm
+            updating the entire codebase to a new version of vue.
+        </i>
         <p>Categories</p>
         <FoldableSection class="category" v-for="category in categories" :key="category.id">
             <template v-slot:header="slotProps" class="sectionHeader">
@@ -210,6 +223,14 @@ export default {
     display: flex;
     flex-direction: column;
     grid-gap: 12px;
+
+    .announcement {
+        line-height: 110%;
+
+        br {
+            line-height: initial;
+        }
+    }
 
     .locations {
         display: flex;
