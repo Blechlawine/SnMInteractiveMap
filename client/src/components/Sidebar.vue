@@ -17,11 +17,6 @@
             localstorage on the new URL when I launch the new hosting. Please search Google (or your search engine of
             choice) on how to do so.
         </p>
-        <br />
-        <i class="announcement">
-            PS: I'm still working on the next update, which is proving to be more work than I expected, because I'm
-            updating the entire codebase to a new version of vue.
-        </i>
         <p>Categories</p>
         <FoldableSection class="category" v-for="category in categories" :key="category.id">
             <template v-slot:header="slotProps" class="sectionHeader">
