@@ -9,6 +9,8 @@
         </div>
         <p>Announcement</p>
         <p class="announcement">
+            <em>NEW VERSION AVAILABLE <a href="https://snminteractivemap.zmarc.de">HERE</a></em>
+
             The Heroku URL will stop working in November, because Heroku is phasing out their free tier and I'm going to
             move the hosting to a different provider. This means your current private pins won't migrate over. But you
             can copy the data of your private pins out from localstorage in your browser and paste them into
